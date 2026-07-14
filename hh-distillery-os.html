@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Hungarian Hammer Distillery - A PWA for spirits management">
+    <meta name="theme-color" content="#8B4513">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HH Distillery">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%238B4513' width='192' height='192'/><text x='50%' y='50%' font-size='120' font-weight='bold' fill='%23D4AF37' text-anchor='middle' dy='.3em'>🔨</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%238B4513' width='192' height='192'/><text x='50%' y='50%' font-size='120' font-weight='bold' fill='%23D4AF37' text-anchor='middle' dy='.3em'>🔨</text></svg>">
+    <link rel="manifest" href="data:application/json,{%22name%22:%22Hungarian%20Hammer%20Distillery%22,%22short_name%22:%22HH%20Distillery%22,%22description%22:%22A%20PWA%20for%20spirits%20management%22,%22start_url%22:%22./hh-distillery-os.html%22,%22scope%22:%22./%22,%22display%22:%22standalone%22,%22theme_color%22:%22%238B4513%22,%22background_color%22:%22%23ffffff%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20192%20192'><rect%20fill='%238B4513'%20width='192'%20height='192'/><text%20x='50%25'%20y='50%25'%20font-size='120'%20font-weight='bold'%20fill='%23D4AF37'%20text-anchor='middle'%20dy='.3em'>🔨</text></svg>%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22,%22purpose%22:%22any%22}]}">
+    <title>Hungarian Hammer Distillery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-top: 16px;
+        }
+
+        .logo {
+            font-size: 64px;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #D4AF37;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            color: #D4AF37;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #c0c0c0;
+            margin-bottom: 12px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #D4AF37;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #D4AF37 0%, #c4941f 100%);
+            color: #1a1a1a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background: rgba(212, 175, 55, 0.2);
+            color: #D4AF37;
+            border: 1px solid #D4AF37;
+        }
+
+        button.secondary:hover {
+            background: rgba(212, 175, 55, 0.3);
+        }
+
+        .spirit-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .spirit-item {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .spirit-info h3 {
+            color: #D4AF37;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .spirit-info p {
+            font-size: 12px;
+            color: #888;
+            margin: 0;
+        }
+
+        .spirit-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        button.delete {
+            background: rgba(220, 38, 38, 0.3);
+            color: #dc2626;
+            padding: 8px 12px;
+            font-size: 12px;
+            border: 1px solid #dc2626;
+        }
+
+        button.delete:hover {
+            background: rgba(220, 38, 38, 0.4);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #D4AF37;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px 16px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #aaa;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tab-button.active {
+            background: #D4AF37;
+            color: #1a1a1a;
+            border-color: #D4AF37;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .logo {
+                font-size: 48px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: #666;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🔨</div>
+            <h1>Hungarian Hammer Distillery</h1>
+            <p class="tagline">Craft spirits inventory & management</p>
+        </header>
+
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
+            <button class="tab-button" onclick="switchTab('spirits')">My Spirits</button>
+            <button class="tab-button" onclick="switchTab('add')">Add Spirit</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">Total Spirits</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="categoryCount">0</div>
+                    <div class="stat-label">Categories</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>About This App</h2>
+                <p>Welcome to the Hungarian Hammer Distillery management system. This PWA (Progressive Web App) runs entirely on your device with no internet required for basic operations.</p>
+                <p><strong>Features:</strong></p>
+                <ul style="margin-left: 16px; color: #c0c0c0;">
+                    <li>📱 Works offline on your phone</li>
+                    <li>💾 Auto-saves your inventory</li>
+                    <li>🔍 Search and filter your collection</li>
+                    <li>⚙️ Fully customizable</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Spirits Tab -->
+        <div id="spirits" class="tab-content">
+            <div id="spiritsList" class="spirit-list"></div>
+            <div id="emptySpirits" class="empty-state" style="display: none;">
+                <p>🍯 No spirits yet. Add your first one!</p>
+            </div>
+        </div>
+
+        <!-- Add Spirit Tab -->
+        <div id="add" class="tab-content">
+            <div class="card">
+                <h2>Add New Spirit</h2>
+                <div class="input-group">
+                    <label for="spiritName">Name *</label>
+                    <input type="text" id="spiritName" placeholder="e.g., Tokaji Pálinka">
+                </div>
+
+                <div class="input-group">
+                    <label for="spiritType">Type *</label>
+                    <select id="spiritType">
+                        <option value="">Select type...</option>
+                        <option value="pálinka">Pálinka</option>
+                        <option value="brandy">Brandy</option>
+                        <option value="whiskey">Whiskey</option>
+                        <option value="vodka">Vodka</option>
+                        <option value="gin">Gin</option>
+                        <option value="rum">Rum</option>
+                        <option value="liqueur">Liqueur</option>
+                        <option value="wine">Wine</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="spiritYear">Year of Production</label>
+                    <input type="number" id="spiritYear" placeholder="e.g., 2020" min="1900" max="2100">
+                </div>
+
+                <div class="input-group">
+                    <label for="spiritOrigin">Origin / Region</label>
+                    <input type="text" id="spiritOrigin" placeholder="e.g., Hungary">
+                </div>
+
+                <div class="input-group">
+                    <label for="spiritABV">Alcohol by Volume (%)</label>
+                    <input type="number" id="spiritABV" placeholder="e.g., 40" min="0" max="95" step="0.1">
+                </div>
+
+                <div class="input-group">
+                    <label for="spiritVolume">Volume (ml)</label>
+                    <input type="number" id="spiritVolume" placeholder="e.g., 750" min="1">
+                </div>
+
+                <div class="input-group">
+                    <label for="spiritNotes">Notes</label>
+                    <textarea id="spiritNotes" placeholder="Add tasting notes, storage info, etc."></textarea>
+                </div>
+
+                <button onclick="addSpirit()">Add to Inventory</button>
+                <button class="secondary" onclick="resetForm()">Clear Form</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize IndexedDB
+        const DB_NAME = 'HHDistillery';
+        const STORE_NAME = 'spirits';
+        let db;
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve();
+                };
+                request.onupgradeneeded = (event) => {
+                    const store = event.target.result.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                    store.createIndex('type', 'type', { unique: false });
+                    store.createIndex('name', 'name', { unique: false });
+                };
+            });
+        }
+
+        // Add spirit to DB
+        async function addSpirit() {
+            const name = document.getElementById('spiritName').value.trim();
+            const type = document.getElementById('spiritType').value;
+
+            if (!name || !type) {
+                alert('Please fill in Name and Type');
+                return;
+            }
+
+            const spirit = {
+                name,
+                type,
+                year: document.getElementById('spiritYear').value || null,
+                origin: document.getElementById('spiritOrigin').value || '',
+                abv: parseFloat(document.getElementById('spiritABV').value) || null,
+                volume: parseInt(document.getElementById('spiritVolume').value) || null,
+                notes: document.getElementById('spiritNotes').value || '',
+                createdAt: new Date().toISOString(),
+            };
+
+            const transaction = db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            store.add(spirit);
+
+            transaction.oncomplete = () => {
+                resetForm();
+                switchTab('spirits');
+                loadSpirits();
+            };
+        }
+
+        // Load and display spirits
+        async function loadSpirits() {
+            const transaction = db.transaction([STORE_NAME], 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+
+            request.onsuccess = () => {
+                const spirits = request.result;
+                const spiritsList = document.getElementById('spiritsList');
+                const emptySpirits = document.getElementById('emptySpirits');
+                const totalCount = document.getElementById('totalCount');
+                const categoryCount = document.getElementById('categoryCount');
+
+                totalCount.textContent = spirits.length;
+
+                if (spirits.length === 0) {
+                    spiritsList.innerHTML = '';
+                    emptySpirits.style.display = 'block';
+                    categoryCount.textContent = '0';
+                    return;
+                }
+
+                emptySpirits.style.display = 'none';
+
+                // Count unique types
+                const types = new Set(spirits.map(s => s.type));
+                categoryCount.textContent = types.size;
+
+                spiritsList.innerHTML = spirits.map(spirit => `
+                    <div class="spirit-item">
+                        <div class="spirit-info">
+                            <h3>${escapeHTML(spirit.name)}</h3>
+                            <p>${escapeHTML(spirit.type)}${spirit.year ? ` • ${spirit.year}` : ''}${spirit.origin ? ` • ${escapeHTML(spirit.origin)}` : ''}</p>
+                            ${spirit.abv ? `<p>ABV: ${spirit.abv}%${spirit.volume ? ` • ${spirit.volume}ml` : ''}</p>` : ''}
+                            ${spirit.notes ? `<p style="margin-top: 6px; font-size: 11px; color: #666;">${escapeHTML(spirit.notes)}</p>` : ''}
+                        </div>
+                        <div class="spirit-actions">
+                            <button class="delete" onclick="deleteSpirit(${spirit.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            };
+        }
+
+        // Delete spirit
+        function deleteSpirit(id) {
+            if (!confirm('Delete this spirit?')) return;
+
+            const transaction = db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            store.delete(id);
+
+            transaction.oncomplete = () => {
+                loadSpirits();
+            };
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('spiritName').value = '';
+            document.getElementById('spiritType').value = '';
+            document.getElementById('spiritYear').value = '';
+            document.getElementById('spiritOrigin').value = '';
+            document.getElementById('spiritABV').value = '';
+            document.getElementById('spiritVolume').value = '';
+            document.getElementById('spiritNotes').value = '';
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event?.target?.classList?.add('active');
+        }
+
+        // HTML escape for safety
+        function escapeHTML(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Register Service Worker for offline support
+        if ('serviceWorker' in navigator) {
+            const swContent = `
+                self.addEventListener('install', event => {
+                    event.waitUntil(self.skipWaiting());
+                });
+                self.addEventListener('activate', event => {
+                    event.waitUntil(self.clients.claim());
+                });
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        fetch(event.request).catch(() => {
+                            return new Response('Offline - data is available locally', {
+                                status: 200,
+                                statusText: 'OK',
+                                headers: new Headers({
+                                    'Content-Type': 'text/plain'
+                                })
+                            });
+                        })
+                    );
+                });
+            `;
+            const blob = new Blob([swContent], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration failed:', err));
+        }
+
+        // Initialize app
+        window.addEventListener('load', async () => {
+            try {
+                await initDB();
+                loadSpirits();
+            } catch (err) {
+                console.error('Init error:', err);
+            }
+        });
+    </script>
+</body>
+</html>
