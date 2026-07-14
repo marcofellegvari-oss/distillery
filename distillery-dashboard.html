@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hungarian Hammer Distillery OS</title>
+<meta name="theme-color" content="#0D0D0D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="application-name" content="HH Distillery">
+<meta name="apple-mobile-web-app-title" content="HH Distillery">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230D0D0D'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='34'%20fill='none'%20stroke='%23B87333'%20stroke-width='4'/%3E%3Cg%20transform='rotate(45%2050%2050)'%20fill='%23B87333'%3E%3Crect%20x='47'%20y='32'%20width='6'%20height='36'%20rx='1.5'/%3E%3Crect%20x='39'%20y='28'%20width='22'%20height='12'%20rx='2'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Hungarian%20Hammer%20Distillery%20OS%22%2C%22short_name%22%3A%22HH%20Distillery%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait-primary%22%2C%22background_color%22%3A%22%230D0D0D%22%2C%22theme_color%22%3A%22%230D0D0D%22%2C%22start_url%22%3A%22.%22%7D">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+:root{
+  color-scheme: dark;
+  --black:#0D0D0D;
+  --gun:#2B2E34;
+  --gun2:#23262b;
+  --copper:#B87333;
+  --copper-lt:#d6934c;
+  --copper-glow:#b8733355;
+  --steel:#8C8F94;
+  --steel-dim:#6b6e73;
+  --burgundy:#8B1E1E;
+  --cream:#F5EFE6;
+  --hred:#C8102E;
+  --green:#225E3E;
+  --green-lt:#3a8a5f;
+  --brown:#7A5A3A;
+  --charcoal:#333333;
+  --ink:#F5EFE6;
+  --muted:#8C8F94;
+  --line:#3a3d4488;
+  --line2:#43464d;
+  --serif:"Cormorant Garamond","Cinzel","Trajan Pro",Georgia,"Hoefler Text","Times New Roman",serif;
+  --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --noise:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/></svg>");
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:
+    var(--noise),
+    radial-gradient(1000px 460px at 82% -12%, #1c1f24 0%, transparent 62%),
+    linear-gradient(180deg,#0f1013 0%,#0a0b0d 100%);
+  background-attachment:fixed;
+  color:var(--ink);min-height:100vh;
+  font-family:var(--sans);font-size:14.5px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+.app{max-width:1180px;margin:0 auto;padding:16px 14px 90px}
+
+/* masthead */
+.masthead{display:flex;align-items:center;gap:14px;padding:4px 4px 14px;border-bottom:1px solid var(--line2);margin-bottom:16px;flex-wrap:wrap}
+.badge-logo{width:56px;height:56px;flex:0 0 auto;filter:drop-shadow(0 4px 10px #0008)}
+.brandwrap{flex:1;min-width:200px}
+.brandwrap h1{margin:0;font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:2px;text-transform:uppercase;line-height:1}
+.brandwrap h1 .cu{color:var(--copper-lt)}
+.brandwrap .tl{color:var(--copper);font-size:10.5px;letter-spacing:4px;text-transform:uppercase;margin-top:4px;font-weight:600}
+.mhright{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mh-date{font-size:11px;color:var(--muted);text-align:right;letter-spacing:.5px}
+.statuschip{display:flex;align-items:center;gap:7px;background:var(--gun2);border:1px solid var(--line2);border-radius:10px;padding:7px 11px;font-size:12px;font-weight:600}
+.batchpick select{background:var(--gun2);color:var(--ink);border:1px solid var(--line2);border-radius:9px;padding:8px 10px;font-size:12.5px;font-weight:600}
+
+/* layout */
+.shell{display:flex;gap:18px;align-items:flex-start}
+.sidebar{flex:0 0 200px;position:sticky;top:14px}
+.nav{display:flex;flex-direction:column;gap:3px;background:linear-gradient(180deg,rgba(43,46,52,.7),rgba(28,30,35,.7));backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:14px;padding:8px}
+.nav .ni{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;color:var(--steel);font-size:13.5px;font-weight:600;cursor:pointer;transition:.14s;border:1px solid transparent}
+.nav .ni .ico{width:17px;text-align:center;opacity:.85}
+.nav .ni:hover{color:var(--cream);background:#ffffff08}
+.nav .ni.active{color:var(--cream);background:linear-gradient(90deg,var(--copper-glow),transparent);border-color:var(--copper);box-shadow:inset 2px 0 0 var(--copper)}
+.newbatch{margin-top:8px;width:100%}
+.main{flex:1;min-width:0}
+
+/* cards */
+.card{background:linear-gradient(180deg,rgba(43,46,52,.72),rgba(30,32,37,.72));backdrop-filter:blur(6px);border:1px solid var(--line2);border-radius:16px;box-shadow:0 8px 26px #0005;overflow:hidden}
+.card + .card{margin-top:16px}
+.card-h{padding:13px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.card-h h2{margin:0;font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:1px;color:var(--cream)}
+.card-h .eyebrow{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--copper);font-weight:700}
+.card-b{padding:17px}
+.hint{color:var(--muted);font-size:12px}
+
+/* buttons */
+.btn{border:none;border-radius:10px;padding:9px 15px;font-size:13.5px;font-weight:700;cursor:pointer;background:linear-gradient(180deg,var(--copper-lt),var(--copper));color:#1a0f05;transition:.15s;letter-spacing:.3px;font-family:var(--sans)}
+.btn:hover{filter:brightness(1.08);box-shadow:0 0 14px var(--copper-glow)}
+.btn.ghost{background:var(--gun2);color:var(--steel);border:1px solid var(--line2)}
+.btn.ghost:hover{color:var(--cream);border-color:var(--copper);box-shadow:none}
+.btn.sm{padding:6px 11px;font-size:12.5px}
+.btn.red{background:transparent;color:#d9686e;padding:6px 8px}
+.btn.red:hover{text-decoration:underline}
+.btn.steel{background:linear-gradient(180deg,#cdd0d5,#9a9da3);color:#161a1f}
+.btn.green{background:linear-gradient(180deg,var(--green-lt),var(--green));color:#eafff2}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:linear-gradient(180deg,#31343b,#25272c);border:1px solid var(--line2);border-radius:13px;padding:13px 14px;position:relative;overflow:hidden}
+.tile .k{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:var(--steel-dim);font-weight:700}
+.tile .v{font-family:var(--serif);font-size:26px;font-weight:700;margin-top:4px;letter-spacing:.3px}
+.tile .v small{font-size:13px;color:var(--muted);font-weight:600;font-family:var(--sans)}
+.tile.hot .v{color:var(--copper-lt)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+
+/* fermenting bubbles animation */
+.bubbles{position:absolute;right:8px;bottom:0;width:40px;height:100%;pointer-events:none;opacity:.5}
+.bubbles span{position:absolute;bottom:-6px;width:5px;height:5px;border-radius:50%;background:var(--copper-lt);animation:rise 3.2s linear infinite}
+.bubbles span:nth-child(2){left:12px;width:4px;height:4px;animation-delay:.9s;animation-duration:2.6s}
+.bubbles span:nth-child(3){left:22px;width:6px;height:6px;animation-delay:1.7s;animation-duration:3.8s}
+.bubbles span:nth-child(4){left:30px;width:3px;height:3px;animation-delay:2.3s;animation-duration:2.9s}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-64px);opacity:0}}
+
+/* fields */
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.field{flex:1;min-width:130px;margin-bottom:12px}
+.field.wide{flex-basis:100%}
+label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--steel-dim);font-weight:700;margin-bottom:5px}
+input,select,textarea{width:100%;background:#15161a;color:var(--ink);border:1px solid var(--line2);border-radius:9px;padding:9px 10px;font-size:14px;font-family:inherit}
+textarea{min-height:64px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--copper);box-shadow:0 0 0 3px var(--copper-glow)}
+.radios{display:flex;gap:6px;flex-wrap:wrap}
+.radios .opt{flex:1;min-width:62px;text-align:center;background:#15161a;border:1px solid var(--line2);border-radius:8px;padding:7px 4px;font-size:12.5px;font-weight:600;color:var(--steel-dim);cursor:pointer}
+.radios .opt.on{background:linear-gradient(180deg,var(--copper-lt),var(--copper));color:#1a0f05;border-color:var(--copper)}
+
+/* stage timeline */
+.timeline{display:flex;flex-wrap:wrap}
+.stg{display:flex;align-items:center}
+.stnode{display:flex;flex-direction:column;align-items:center;cursor:pointer;min-width:80px;padding:4px 2px}
+.stbead{width:28px;height:28px;border-radius:50%;border:2px solid var(--line2);background:#15161a;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--steel-dim);transition:.15s}
+.stnode .lbl{font-family:var(--serif);font-size:11px;text-align:center;margin-top:6px;color:var(--steel-dim);max-width:80px;letter-spacing:.3px}
+.stnode.cur .stbead{box-shadow:0 0 0 4px #ffffff12, 0 0 16px currentColor;transform:scale(1.1)}
+.stbar{width:24px;height:2px;background:var(--line2);margin-top:13px}
+
+/* progress ring */
+.ring{--p:0;width:82px;height:82px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--copper) calc(var(--p)*1%), #2c2f35 0);position:relative}
+.ring::before{content:"";position:absolute;inset:7px;border-radius:50%;background:#1c1e22}
+.ring .rv{position:relative;font-family:var(--serif);font-size:19px;font-weight:700;color:var(--copper-lt)}
+
+/* entries */
+.entry{display:flex;gap:12px;padding:13px 0;border-bottom:1px dashed var(--line)}
+.entry:last-child{border-bottom:none}
+.entry .ed{flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:var(--copper);margin-top:6px;box-shadow:0 0 0 3px var(--copper-glow)}
+.ewhen{font-size:12px;color:var(--muted);font-weight:700}
+.etags{display:flex;gap:7px;flex-wrap:wrap;margin:5px 0}
+.tag{font-size:11px;background:#15161a;border:1px solid var(--line2);color:var(--steel);border-radius:6px;padding:2px 8px;font-weight:600}
+.enote{white-space:pre-wrap;margin-top:3px}
+.ephotos{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.ephotos img{width:92px;height:92px;object-fit:cover;border-radius:9px;border:1px solid var(--line2);cursor:pointer}
+.entry .del{opacity:0}
+.entry:hover .del{opacity:1}
+
+/* list rows */
+.lrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.lrow:last-child{border-bottom:none}
+.lrow .nm{flex:1;font-weight:600}
+.lrow .sub{color:var(--muted);font-size:12px;font-weight:400}
+.qty{width:70px !important;text-align:center}
+.chip{font-size:10.5px;padding:2px 8px;border-radius:999px;font-weight:700;letter-spacing:.3px}
+.chip.low{background:#3a1516;color:#e0757b}
+.chip.ok{background:#12301f;color:#4fbe80}
+
+/* checklist */
+.check{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.check:last-child{border-bottom:none}
+.check .box{width:22px;height:22px;border-radius:6px;border:2px solid var(--line2);display:grid;place-items:center;font-size:13px;color:transparent;transition:.15s}
+.check.on .box{background:var(--green);border-color:var(--green-lt);color:#eafff2}
+.check.on .ctxt{color:var(--muted);text-decoration:line-through}
+
+/* wall of fame */
+.wof{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.fame{background:linear-gradient(180deg,#2b2e34,#1a1c20);border:1px solid var(--line2);border-radius:14px;padding:16px;position:relative;overflow:hidden}
+.fame::after{content:"";position:absolute;inset:0;background:radial-gradient(220px 90px at 88% 0,var(--copper-glow),transparent 60%);pointer-events:none}
+.fame .medal{position:absolute;top:12px;right:14px;font-size:22px}
+.fame h3{margin:0 0 2px;font-family:var(--serif);font-size:17px}
+.fame .nick{color:var(--copper-lt);font-size:12.5px;font-style:italic;margin-bottom:11px}
+.fame .fg{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:12.5px}
+.fame .fg .k{color:var(--steel-dim)}
+.stars{color:#d9a441;letter-spacing:1px}
+
+/* label */
+.label-preview{background:var(--cream);color:#1a1512;border-radius:5px;padding:22px;width:300px;margin:0 auto;text-align:center;box-shadow:0 10px 34px #000a;border:1px solid #d8cdbb;background-image:var(--noise)}
+.label-preview .lp-emoji{font-size:30px}
+.label-preview .lp-brand{font-family:var(--serif);font-weight:700;letter-spacing:3px;font-size:21px;text-transform:uppercase;margin:4px 0}
+.label-preview .lp-tl{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#7a6f60}
+.label-preview .lp-rule{height:2px;background:#1a1512;margin:9px auto;width:58%}
+.label-preview .lp-prod{font-family:var(--serif);font-size:17px;letter-spacing:2px;text-transform:uppercase;margin:6px 0}
+.label-preview .lp-abv{font-family:var(--serif);font-size:27px;font-weight:700}
+.label-preview .lp-meta{font-size:10.5px;letter-spacing:1px;color:#5a5148;margin-top:10px;text-transform:uppercase}
+.label-preview .lp-batch{font-size:11.5px;font-weight:700;letter-spacing:2px;margin-top:6px}
+
+/* gallery */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.gal figure{margin:0}
+.gal img{width:100%;height:120px;object-fit:cover;border-radius:10px;border:1px solid var(--line2);cursor:pointer}
+.gal figcaption{font-size:10px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+
+/* lightbox + modal */
+.lb{position:fixed;inset:0;background:#060607ee;display:none;align-items:center;justify-content:center;z-index:90;padding:24px}
+.lb.open{display:flex}
+.lb img{max-width:100%;max-height:100%;border-radius:12px}
+.lb .close{position:absolute;top:14px;right:20px;color:#fff;font-size:32px;background:none;border:none;cursor:pointer}
+.modal{position:fixed;inset:0;background:#06060799;backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:80;padding:20px}
+.modal.open{display:flex}
+.modal .mcard{background:var(--gun);border:1px solid var(--line2);border-radius:16px;padding:20px;max-width:470px;width:100%;max-height:90vh;overflow:auto}
+.modal h3{margin:0 0 14px;font-family:var(--serif);font-size:19px}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.thumb{position:relative}
+.thumb img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--line2)}
+.thumb .x{position:absolute;top:-6px;right:-6px;background:var(--burgundy);color:#fff;border:none;border-radius:50%;width:19px;height:19px;font-size:11px;cursor:pointer;line-height:1}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.brandbadge{font-size:9.5px;font-weight:800;letter-spacing:1px;padding:2px 7px;border-radius:5px;text-transform:uppercase}
+.brandbadge.hammer{background:#2b2e34;color:var(--steel);border:1px solid var(--line2)}
+.brandbadge.palinka{background:#33141c;color:#e0757b;border:1px solid #5a2530}
+.section{display:none}.section.active{display:block}
+.cmdbar{display:flex;gap:8px;align-items:center;background:linear-gradient(180deg,rgba(43,46,52,.85),rgba(28,30,35,.85));backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:14px;padding:8px;margin-bottom:16px;box-shadow:0 8px 26px #0005}
+.cmdbar input{flex:1;min-width:120px}
+.mic{flex:0 0 auto;width:44px;height:44px;border-radius:11px;border:1px solid var(--line2);background:var(--gun2);color:var(--copper-lt);font-size:19px;cursor:pointer;transition:.15s}
+.mic:hover{border-color:var(--copper)}
+.mic.on{background:var(--burgundy);color:#fff;border-color:var(--hred);animation:pulse 1.1s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #c8102e66}50%{box-shadow:0 0 0 8px #c8102e00}}
+.cmdcard{background:linear-gradient(180deg,rgba(43,46,52,.85),rgba(30,32,37,.85));border:1px solid var(--copper);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 0 22px var(--copper-glow)}
+.cmdcard h4{margin:0 0 3px;font-family:var(--serif);font-size:17px;color:var(--copper-lt)}
+.cmdcard .sg{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+.cmdcard .sg .i{color:var(--copper-lt);flex:0 0 auto}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--green);color:#eafff2;padding:10px 18px;border-radius:10px;font-weight:700;z-index:95;box-shadow:0 6px 20px #0007;opacity:0;transition:.25s;pointer-events:none}
+.toast.show{opacity:1}
+.hamb{display:none;flex:0 0 auto;width:42px;height:42px;border-radius:11px;border:1px solid var(--line2);background:var(--gun2);color:var(--copper-lt);font-size:20px;cursor:pointer}
+.hamb:hover{border-color:var(--copper)}
+@media(max-width:820px){
+  .shell{flex-direction:column}
+  .sidebar{position:static;flex:1 1 auto;width:100%}
+  .nav{display:none;flex-direction:column;margin-bottom:8px}
+  .nav.open{display:flex}
+  .newbatch{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .hamb{display:inline-flex;align-items:center;justify-content:center}
+  .brandwrap h1{font-size:21px}
+  .tile .v{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="masthead">
+    <button class="hamb" onclick="toggleNav()" aria-label="Menu">☰</button>
+    <svg class="badge-logo" viewBox="0 0 100 100" aria-label="Hungarian Hammer Distillery">
+      <defs>
+        <radialGradient id="cop" cx="50%" cy="38%" r="70%">
+          <stop offset="0%" stop-color="#e0a05a"/><stop offset="55%" stop-color="#B87333"/><stop offset="100%" stop-color="#5f3a18"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="47" fill="#15161a" stroke="url(#cop)" stroke-width="3"/>
+      <circle cx="50" cy="50" r="41" fill="none" stroke="#B87333" stroke-width="1" opacity=".5"/>
+      <g stroke="#B87333" stroke-width="1.4" opacity=".55">
+        <line x1="50" y1="10" x2="50" y2="18"/><line x1="50" y1="82" x2="50" y2="90"/>
+        <line x1="10" y1="50" x2="18" y2="50"/><line x1="82" y1="50" x2="90" y2="50"/>
+        <line x1="22" y1="22" x2="28" y2="28"/><line x1="72" y1="72" x2="78" y2="78"/>
+        <line x1="78" y1="22" x2="72" y2="28"/><line x1="28" y1="72" x2="22" y2="78"/>
+      </g>
+      <g transform="rotate(45 50 50)" fill="url(#cop)" stroke="#4a2c12" stroke-width="1">
+        <rect x="47" y="30" width="6" height="40" rx="1.5"/>
+        <rect x="38" y="26" width="24" height="13" rx="2.5"/>
+      </g>
+    </svg>
+    <div class="brandwrap">
+      <h1><span class="cu">Hungarian</span> Hammer</h1>
+      <div class="tl">Distillery · Forged in South Australia</div>
+    </div>
+    <div class="mhright">
+      <div class="statuschip" id="mhStatus"></div>
+      <div class="batchpick"><select id="activePick" onchange="setActive(this.value)"></select></div>
+      <div class="mh-date" id="mhDate"></div>
+    </div>
+  </div>
+
+  <div class="cmdbar">
+    <button id="micBtn" class="mic" onclick="toggleMic()" title="Speak">🎙️</button>
+    <input id="cmdInput" placeholder="Say or type what's going on — e.g. “Hungarian Hammer, 16 degrees, bubbling slowly, smells boozy”" onkeydown="if(event.key==='Enter')runCommand()">
+    <button class="btn" onclick="runCommand()">Log it</button>
+  </div>
+  <div id="cmdResult"></div>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <nav class="nav" id="nav"></nav>
+      <button class="btn newbatch" onclick="openBatchModal()">+ New batch</button>
+    </aside>
+    <main class="main" id="view"></main>
+  </div>
+</div>
+
+<div class="lb" id="lb" onclick="closeLB()"><button class="close">&times;</button><img id="lbimg" alt=""></div>
+
+<div class="modal" id="batchModal">
+  <div class="mcard">
+    <h3>New batch</h3>
+    <div class="row">
+      <div class="field" style="flex:0 0 70px"><label>Emoji</label><input id="nbEmoji" value="🔨" maxlength="4"></div>
+      <div class="field"><label>Batch code</label><input id="nbCode" placeholder="HH-002"></div>
+      <div class="field"><label>Brand</label><select id="nbBrand"><option value="hammer">🔨 Hungarian Hammer</option><option value="palinka">🫏 Pálinka Banda</option></select></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Nickname</label><input id="nbNick" placeholder="The Second Hammer"></div>
+      <div class="field"><label>Product</label><input id="nbProduct" placeholder="Vodka / Peppermint Schnapps…"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Yeast</label><input id="nbYeast" placeholder="Turbo / Distillers"></div>
+      <div class="field"><label>Sugar type</label><input id="nbSugar" placeholder="Dextrose / Turbo"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Start date</label><input id="nbStart" type="date"></div>
+      <div class="field"><label>Planned distil</label><input id="nbFinish" type="date"></div>
+    </div>
+    <div class="row" style="justify-content:flex-end;gap:8px"><button class="btn ghost sm" onclick="closeBatchModal()">Cancel</button><button class="btn sm" onclick="saveBatch()">Create batch</button></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const LS_KEY="hhDistilleryOS_v2";
+const STAGES=[
+  {k:"fermentation",l:"Fermentation",c:"#3a8a5f"},
+  {k:"clearing",l:"Clearing",c:"#4a90d9"},
+  {k:"racking",l:"Racking",c:"#4a90d9"},
+  {k:"distillation",l:"Distillation",c:"#d6934c"},
+  {k:"carbon",l:"Carbon Filter",c:"#8C8F94"},
+  {k:"dilution",l:"Dilution",c:"#d9a441"},
+  {k:"bottling",l:"Bottling",c:"#d9a441"},
+  {k:"labelling",l:"Labelling",c:"#B87333"},
+  {k:"ready",l:"Ready to Drink",c:"#3a8a5f"}
+];
+const stageIdx=k=>Math.max(0,STAGES.findIndex(s=>s.k===k));
+const stageLabel=k=>(STAGES.find(s=>s.k===k)||STAGES[0]).l;
+const stageColor=k=>(STAGES.find(s=>s.k===k)||STAGES[0]).c;
+const SMELLS=["","Sweet","Bread","Fruit","Alcohol","Sulphur","Other"];
+const BUBBLE=["None","Slow","Moderate","Fast","Violent"];
+function uid(){return Math.random().toString(36).slice(2,10)}
+
+function seed(){
+  return {
+    active:"hh1",
+    batches:[
+      {id:"hh1",code:"HH-001",emoji:"🔨",brand:"hammer",nick:"The First Hammer",product:"Vodka",yeast:"Turbo",sugar:"Normal dextrose",
+        startGravity:"",predictedFG:"0.995",currentGravity:"",start:"2026-07-05",finish:"2026-07-26",stage:"fermentation",
+        temp:"16",bubble:"Slow",smell:"Alcohol",
+        prep:{water:false,cleaning:false,jars:false,cuts:false,notes:""},
+        distill:{boiler:"",cooling:"",startTime:"",heads:"",hearts:"",tails:"",totalAlc:"",outputPct:"",speed:"",waterTemp:"",notes:""},
+        bottling:{count:"",size:"700",date:"",notes:""},
+        score:{rating:0,medal:"",taste:""},yieldL:"",abv:"",
+        log:[
+          {id:uid(),when:"2026-07-05T18:30",stage:"fermentation",temp:"",bubble:"",smell:"",note:"Batch started (~6–7pm). Normal dextrose sugar, pitched.",photos:[]},
+          {id:uid(),when:"2026-07-06T06:30",stage:"fermentation",temp:"20",bubble:"Fast",smell:"Sweet",note:"Day 1. Bubbling every second or so — absolutely flying.",photos:[]},
+          {id:uid(),when:"2026-07-07T08:35",stage:"fermentation",temp:"18",bubble:"Fast",smell:"Sweet",note:"Constantly chugging. Very strong, pleasant sweet aroma in the room.",photos:[]},
+          {id:uid(),when:"2026-07-07T18:35",stage:"fermentation",temp:"20",bubble:"Violent",smell:"Sweet",note:"Almost constant bubbling. Right in the sweet spot.",photos:[]},
+          {id:uid(),when:"2026-07-10T07:50",stage:"fermentation",temp:"16",bubble:"Slow",smell:"Alcohol",note:"Slowed right down. Most easy sugar used. Wrapped to warm back to 18–20°C. Late stage.",photos:[]},
+          {id:uid(),when:"2026-07-12T09:26",stage:"fermentation",temp:"18",bubble:"Slow",smell:"Alcohol",note:"Warmed back up. Still going, entering final stage.",photos:[]},
+          {id:uid(),when:"2026-07-13T09:00",stage:"fermentation",temp:"16",bubble:"Slow",smell:"Alcohol",note:"~1 bubble every 2 min. Final stage. Take first FG reading from the tap soon (target 0.990–1.000).",photos:[]}
+        ]},
+      {id:"td1",code:"TD-001",emoji:"🚗",brand:"hammer",nick:"Turbo Driver",product:"Vodka",yeast:"Turbo (super)",sugar:"Super sugar",
+        startGravity:"",predictedFG:"0.995",currentGravity:"",start:"2026-07-05",finish:"2026-07-26",stage:"fermentation",
+        temp:"18",bubble:"Moderate",smell:"Alcohol",
+        prep:{water:false,cleaning:false,jars:false,cuts:false,notes:""},
+        distill:{boiler:"",cooling:"",startTime:"",heads:"",hearts:"",tails:"",totalAlc:"",outputPct:"",speed:"",waterTemp:"",notes:""},
+        bottling:{count:"",size:"700",date:"",notes:""},
+        score:{rating:0,medal:"",taste:""},yieldL:"",abv:"",
+        log:[
+          {id:uid(),when:"2026-07-05T18:30",stage:"fermentation",temp:"",bubble:"",smell:"",note:"Batch started (~6–7pm). Super sugar, pitched.",photos:[]},
+          {id:uid(),when:"2026-07-06T06:30",stage:"fermentation",temp:"20",bubble:"None",smell:"",note:"Day 1. Not bubbling yet. Small leak from the tap — keep an eye on it.",photos:[]},
+          {id:uid(),when:"2026-07-07T08:35",stage:"fermentation",temp:"16",bubble:"Slow",smell:"Bread",note:"Cool at 16°C — put a blanket on it. Chugging in intervals (~every 10s).",photos:[]},
+          {id:uid(),when:"2026-07-07T18:35",stage:"fermentation",temp:"18",bubble:"Moderate",smell:"Bread",note:"Fully woke up — now bubbling continuously. Sleeping bag helped.",photos:[]},
+          {id:uid(),when:"2026-07-12T09:26",stage:"fermentation",temp:"22",bubble:"Fast",smell:"Alcohol",note:"Strong ferment, every 1–2 sec, just past peak.",photos:[]},
+          {id:uid(),when:"2026-07-13T09:00",stage:"fermentation",temp:"18",bubble:"Moderate",smell:"Alcohol",note:"Every ~5 sec, slowing from peak. ~1–2 days behind Hungarian Hammer.",photos:[]}
+        ]}
+    ],
+    recipes:[
+      {id:uid(),name:"Vodka",brand:"hammer",cat:"Core",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Gin",brand:"hammer",cat:"Core",difficulty:"Hard",notes:""},
+      {id:uid(),name:"Peppermint Schnapps",brand:"palinka",cat:"Core",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Peach Schnapps",brand:"palinka",cat:"Core",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Apple Schnapps",brand:"palinka",cat:"Core",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Pear Schnapps",brand:"palinka",cat:"Future",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Plum Schnapps",brand:"palinka",cat:"Future",difficulty:"Hard",notes:""},
+      {id:uid(),name:"Apricot Schnapps",brand:"palinka",cat:"Future",difficulty:"Hard",notes:""},
+      {id:uid(),name:"Cherry Schnapps",brand:"palinka",cat:"Future",difficulty:"Hard",notes:""},
+      {id:uid(),name:"Raspberry Schnapps",brand:"palinka",cat:"Future",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Lemon Schnapps",brand:"palinka",cat:"Future",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Blood Orange Schnapps",brand:"palinka",cat:"Future",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Coffee Schnapps",brand:"palinka",cat:"Future",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Chocolate Mint Schnapps",brand:"palinka",cat:"Future",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Hungarian Pálinka",brand:"palinka",cat:"Limited",difficulty:"Hard",notes:""},
+      {id:uid(),name:"Christmas Spice",brand:"palinka",cat:"Limited",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Wild Berry",brand:"palinka",cat:"Limited",difficulty:"Medium",notes:""},
+      {id:uid(),name:"Barrel Experiment Series",brand:"hammer",cat:"Limited",difficulty:"Hard",notes:""}
+    ],
+    inventory:[
+      {id:uid(),name:"Dextrose sugar",qty:8,unit:"kg",min:6,grp:"Base"},
+      {id:uid(),name:"Turbo sugar",qty:3,unit:"kg",min:6,grp:"Base"},
+      {id:uid(),name:"Turbo yeast",qty:12,unit:"sachets",min:4,grp:"Base"},
+      {id:uid(),name:"Carbon",qty:1,unit:"kg",min:1,grp:"Base"},
+      {id:uid(),name:"Clearing agent",qty:2,unit:"packs",min:2,grp:"Base"},
+      {id:uid(),name:"Peppermint essence",qty:2,unit:"bottles",min:2,grp:"Botanicals"},
+      {id:uid(),name:"Peach essence",qty:2,unit:"bottles",min:2,grp:"Botanicals"},
+      {id:uid(),name:"Apple essence",qty:1,unit:"bottles",min:2,grp:"Botanicals"},
+      {id:uid(),name:"Juniper / gin botanicals",qty:1,unit:"kits",min:1,grp:"Botanicals"},
+      {id:uid(),name:"Fresh fruit (seasonal)",qty:0,unit:"kg",min:0,grp:"Fruit"},
+      {id:uid(),name:"Bottles 700ml",qty:12,unit:"units",min:12,grp:"Packaging"},
+      {id:uid(),name:"Corks",qty:12,unit:"units",min:12,grp:"Packaging"},
+      {id:uid(),name:"Labels",qty:0,unit:"units",min:12,grp:"Packaging"},
+      {id:uid(),name:"Cleaner",qty:1,unit:"btl",min:1,grp:"Cleaning"},
+      {id:uid(),name:"Sanitiser",qty:1,unit:"btl",min:1,grp:"Cleaning"}
+    ],
+    stillType:"Reflux (T500)",
+    equipment:[
+      {id:uid(),name:"T500 Reflux Still (in use)",last:"",note:"Current still — reflux column, not a pot/copper continuous still. Great for clean neutral spirit."},
+      {id:uid(),name:"Reflux column packing",last:"",note:""},
+      {id:uid(),name:"Pump",last:"",note:""},
+      {id:uid(),name:"Hydrometer",last:"",note:""},
+      {id:uid(),name:"Alcoholmeter",last:"",note:""},
+      {id:uid(),name:"Fermenters",last:"",note:""},
+      {id:uid(),name:"Demijohns",last:"",note:""}
+    ],
+    sales:[],
+    experiments:[
+      {id:uid(),title:"Turbo sugar vs Dextrose",date:"2026-07-05",note:"Running HH-001 (dextrose) alongside TD-001 (super sugar) from the same start time to compare speed, yield and taste. Dextrose started faster; super sugar was a slow starter that caught up."}
+    ]
+  };
+}
+
+let db;
+function load(){try{const raw=localStorage.getItem(LS_KEY);db=raw?JSON.parse(raw):seed();}catch(e){db=seed();}if(!db||!db.batches||!db.batches.length)db=seed();}
+function save(){try{localStorage.setItem(LS_KEY,JSON.stringify(db));}catch(e){alert("Couldn't save — device storage may be full. Try fewer/smaller photos.");}}
+function activeBatch(){return db.batches.find(b=>b.id===db.active)||db.batches[0];}
+function setActive(id){db.active=id;save();renderAll();}
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function fmtWhen(iso){const d=new Date(iso);if(isNaN(d))return iso;return d.toLocaleString(undefined,{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});}
+function fmtDate(d){return d?new Date(d+'T00:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'—';}
+function dayNum(b){if(!b.start)return"—";const s=new Date(b.start+"T00:00");return Math.max(1,Math.floor((Date.now()-s)/86400000)+1);}
+function daysTo(d){if(!d)return null;return Math.ceil((new Date(d+"T00:00")-Date.now())/86400000);}
+function latest(b,key){for(let i=b.log.length-1;i>=0;i--){if(b.log[i][key])return b.log[i][key];}return"";}
+function brandName(br){return br==='hammer'?'Hungarian Hammer':'Fütyülős Pálinka Banda';}
+function brandEmoji(br){return br==='hammer'?'🔨':'🫏';}
+
+const NAV=[
+  ["dashboard","🎛️","Dashboard"],["fermentation","🫧","Fermentation"],["distillation","🔥","Distillation"],
+  ["recipes","📖","Recipes"],["inventory","📦","Inventory"],["bottles","🍾","Bottles"],
+  ["labels","🏷️","Labels"],["sales","💰","Sales"],["experiments","⚗️","Experiments"],
+  ["analytics","📊","Analytics"],["settings","⚙️","Settings"]
+];
+let cur="dashboard";
+function renderNav(){document.getElementById('nav').innerHTML=NAV.map(n=>`<div class="ni ${n[0]===cur?'active':''}" onclick="go('${n[0]}')"><span class="ico">${n[1]}</span>${n[2]}</div>`).join('');}
+function go(t){cur=t;renderNav();renderView();if(window.innerWidth<=820){const n=document.getElementById('nav');if(n)n.classList.remove('open');}window.scrollTo({top:0,behavior:'smooth'});}
+function toggleNav(){const n=document.getElementById('nav');if(n)n.classList.toggle('open');}
+function renderPick(){document.getElementById('activePick').innerHTML=db.batches.map(b=>`<option value="${b.id}" ${b.id===db.active?'selected':''}>${esc(b.emoji)} ${esc(b.code)}</option>`).join('');}
+function renderMasthead(){
+  const b=activeBatch();
+  document.getElementById('mhStatus').innerHTML=`<span class="dot" style="background:${stageColor(b.stage)}"></span>${esc(b.code)} · ${stageLabel(b.stage)}`;
+  document.getElementById('mhDate').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'});
+}
+function renderAll(){renderPick();renderNav();renderMasthead();renderView();}
+
+let charts=[];
+function destroyCharts(){charts.forEach(c=>{try{c.destroy();}catch(e){}});charts=[];}
+function renderView(){
+  destroyCharts();
+  const b=activeBatch();
+  document.getElementById('view').innerHTML=({
+    dashboard:vDashboard,fermentation:vFerment,distillation:vDistill,recipes:vRecipes,
+    inventory:vInventory,bottles:vBottles,labels:vLabels,sales:vSales,experiments:vExperiments,
+    analytics:vAnalytics,settings:vSettings
+  }[cur])(b);
+  if(cur==="analytics")drawStats();
+  if(cur==="labels")drawLabel();
+  renderMasthead();
+}
+
+/* ---------- DASHBOARD ---------- */
+function vDashboard(b){
+  const cd=daysTo(b.finish);
+  const prepDone=['water','cleaning','jars','cuts'].filter(k=>b.prep[k]).length;
+  const ferms=db.batches.filter(x=>x.stage==='fermentation');
+  const lowN=db.inventory.filter(i=>Number(i.qty)<Number(i.min)).length;
+  const bottlesFilled=db.batches.reduce((a,x)=>a+(parseFloat(x.bottling&&x.bottling.count)||0),0);
+  const salesVal=db.sales.reduce((a,s)=>a+(parseFloat(s.price)||0)*(parseFloat(s.qty)||0),0);
+  const wy=db.batches.filter(x=>parseFloat(x.yieldL));const avgY=wy.length?(wy.reduce((a,x)=>a+parseFloat(x.yieldL),0)/wy.length).toFixed(1):'—';
+  const coreR=db.recipes.filter(r=>r.cat==='Core').length,futR=db.recipes.filter(r=>r.cat==='Future').length,limR=db.recipes.filter(r=>r.cat==='Limited').length;
+  const topBatch=[...db.batches].sort((a,c)=>(c.score.rating||0)-(a.score.rating||0))[0];
+  const recent=[...b.log].sort((x,y)=>new Date(y.when)-new Date(x.when)).slice(0,3);
+  return `
+  <div class="tiles" style="margin-bottom:16px">
+    <div class="tile" style="cursor:pointer" onclick="go('analytics')"><div class="k">Batches</div><div class="v">${db.batches.length}</div></div>
+    <div class="tile hot"><div class="k">Active ferments</div><div class="v">${ferms.length}</div></div>
+    <div class="tile hot" style="cursor:pointer" onclick="go('fermentation')"><div class="k">${esc(b.code)} temp</div><div class="v">${b.temp||latest(b,'temp')||'—'}<small>°C</small></div></div>
+    <div class="tile"><div class="k">Next distil</div><div class="v">${cd==null?'—':(cd<0?Math.abs(cd)+'<small> d over</small>':cd+'<small> d</small>')}</div></div>
+    <div class="tile" style="cursor:pointer" onclick="go('inventory')"><div class="k">Low stock</div><div class="v" style="${lowN?'color:#e0757b':''}">${lowN}</div></div>
+    <div class="tile" style="cursor:pointer" onclick="go('bottles')"><div class="k">Bottles filled</div><div class="v">${bottlesFilled||0}</div></div>
+  </div>
+
+  ${fermCardsHTML(ferms)}
+
+  <div class="grid2" style="margin-top:16px">
+    <div class="card"><div class="card-h"><span class="eyebrow">Next up</span><h2>Upcoming Distillation</h2><button class="btn sm ghost" onclick="go('distillation')">Open →</button></div>
+      <div class="card-b">
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+          <div class="ring" style="--p:${Math.round(prepDone/4*100)}"><span class="rv">${prepDone}/4</span></div>
+          <div><div class="tile" style="background:none;border:none;padding:0">
+            <div class="k">${esc(b.code)} · ${esc(b.product)}</div>
+            <div class="v">${cd==null?'—':(cd<0?Math.abs(cd)+' d over':cd+' days')}</div>
+            <div class="hint">${b.finish?'Planned '+fmtDate(b.finish):'No date set'} · Still: ${esc(db.stillType||'Reflux (T500)')}</div>
+          </div></div>
+        </div>
+        <div style="margin-top:12px">
+          ${prepRow('water','Distilling water ready',b)}
+          ${prepRow('cleaning','Still cleaned & sanitised',b)}
+          ${prepRow('jars','Collection jars labelled',b)}
+          ${prepRow('cuts','Cuts plan reviewed (heads/hearts/tails)',b)}
+        </div>
+      </div></div>
+    <div class="card"><div class="card-h"><span class="eyebrow">Log</span><h2>Recent Check-ins</h2><button class="btn sm ghost" onclick="go('fermentation')">Add →</button></div>
+      <div class="card-b">${recent.length?recent.map(e=>renderEntry(b,e,true)).join(''):'<div class="hint">No check-ins yet.</div>'}
+        <div style="margin-top:12px"><div class="eyebrow" style="margin-bottom:8px">Progress</div>${timelineHTML(b)}</div>
+      </div></div>
+  </div>
+
+  <div class="grid2" style="margin-top:16px">
+    <div class="card"><div class="card-h"><span class="eyebrow">Stock</span><h2>Inventory Watch</h2><button class="btn sm ghost" onclick="go('inventory')">Manage →</button></div>
+      <div class="card-b">${invWatchHTML()}</div></div>
+    <div class="card"><div class="card-h"><span class="eyebrow">History</span><h2>Batch History</h2><button class="btn sm ghost" onclick="go('analytics')">All →</button></div>
+      <div class="card-b">${db.batches.map(x=>`<div class="lrow" style="cursor:pointer" onclick="setActive('${x.id}')"><span class="brandbadge ${x.brand}">${brandEmoji(x.brand)}</span><div class="nm">${esc(x.code)} · ${esc(x.product)}<div class="sub">${stageLabel(x.stage)} · Day ${dayNum(x)} · started ${fmtDate(x.start)}</div></div><span class="stars">${stars(x.score.rating)}</span></div>`).join('')}</div></div>
+  </div>
+
+  <div class="grid2" style="margin-top:16px">
+    <div class="card"><div class="card-h"><span class="eyebrow">Line-up</span><h2>Recipes</h2><button class="btn sm ghost" onclick="go('recipes')">Open →</button></div>
+      <div class="card-b"><div class="hint" style="margin-bottom:8px">${coreR} core · ${futR} future · ${limR} limited</div>
+        ${db.recipes.filter(r=>r.cat==='Core').map(r=>`<div class="lrow"><span class="brandbadge ${r.brand}">${brandEmoji(r.brand)}</span><div class="nm">${esc(r.name)}</div><span class="chip ${r.difficulty==='Hard'?'low':'ok'}">${esc(r.difficulty)}</span></div>`).join('')}</div></div>
+    <div class="card"><div class="card-h"><span class="eyebrow">Finished goods</span><h2>Bottles</h2><button class="btn sm ghost" onclick="go('bottles')">Open →</button></div>
+      <div class="card-b"><div class="tiles">
+        <div class="tile"><div class="k">${esc(b.code)} filled</div><div class="v">${esc(b.bottling.count||'0')}</div></div>
+        <div class="tile"><div class="k">Size</div><div class="v">${esc(b.bottling.size||'—')}<small> mL</small></div></div>
+        <div class="tile"><div class="k">Yield</div><div class="v">${b.yieldL?esc(b.yieldL):'—'}<small> L</small></div></div>
+      </div></div></div>
+  </div>
+
+  <div class="grid2" style="margin-top:16px">
+    <div class="card"><div class="card-h"><span class="eyebrow">Shared with mates</span><h2>Sales &amp; Gifting</h2><button class="btn sm ghost" onclick="go('sales')">Open →</button></div>
+      <div class="card-b"><div class="tiles" style="margin-bottom:${db.sales.length?'10px':'0'}"><div class="tile hot"><div class="k">Value</div><div class="v">$${salesVal.toFixed(0)}</div></div><div class="tile"><div class="k">Records</div><div class="v">${db.sales.length}</div></div></div>
+        ${db.sales.length?db.sales.slice(-2).reverse().map(s=>`<div class="lrow"><div class="nm">${esc(s.product||'—')}<div class="sub">→ ${esc(s.buyer||'—')} · ${fmtDate(s.date)}</div></div><span class="tag">${esc(s.qty||'0')} btl</span></div>`).join(''):'<div class="hint">Nothing logged yet.</div>'}</div></div>
+    <div class="card"><div class="card-h"><span class="eyebrow">The lab</span><h2>Experiments</h2><button class="btn sm ghost" onclick="go('experiments')">Open →</button></div>
+      <div class="card-b">${db.experiments.length?db.experiments.slice(-3).reverse().map(x=>`<div class="lrow"><div class="nm">${esc(x.title)}<div class="sub">${fmtDate(x.date)} · ${esc((x.note||'').slice(0,70))}</div></div></div>`).join(''):'<div class="hint">No experiments yet.</div>'}</div></div>
+  </div>
+
+  <div class="card" style="margin-top:16px"><div class="card-h"><span class="eyebrow">Snapshot</span><h2>Production &amp; Wall of Fame</h2><button class="btn sm ghost" onclick="go('analytics')">Open →</button></div>
+    <div class="card-b">
+      <div class="tiles" style="margin-bottom:${topBatch?'12px':'0'}"><div class="tile"><div class="k">Total batches</div><div class="v">${db.batches.length}</div></div><div class="tile hot"><div class="k">Avg yield</div><div class="v">${avgY}<small> L</small></div></div><div class="tile"><div class="k">Top rated</div><div class="v" style="font-size:16px">${topBatch?esc(topBatch.code):'—'}</div></div></div>
+      ${topBatch?`<div class="lrow"><span class="brandbadge ${topBatch.brand}">${brandEmoji(topBatch.brand)}</span><div class="nm">${esc(topBatch.code)} · "${esc(topBatch.nick||topBatch.product)}"<div class="sub">${medalEmoji(topBatch.score.medal)} ${topBatch.yieldL?esc(topBatch.yieldL)+'L · ':''}${topBatch.abv?esc(topBatch.abv)+'%':''}</div></div><span class="stars">${stars(topBatch.score.rating)}</span></div>`:''}
+    </div></div>`;
+}
+function fermCardsHTML(ferms){
+  if(!ferms.length)return `<div class="card"><div class="card-h"><span class="eyebrow">Live</span><h2>Current Fermentations</h2></div><div class="card-b hint">No active ferments right now.</div></div>`;
+  return `<div class="card"><div class="card-h"><span class="eyebrow">Live</span><h2>Current Fermentations</h2></div><div class="card-b"><div class="tiles">`+
+    ferms.map(b=>{
+      const temp=b.temp||latest(b,'temp')||'—';
+      return `<div class="tile" style="cursor:pointer" onclick="setActive('${b.id}')">
+        <div class="bubbles"><span></span><span></span><span></span><span></span></div>
+        <div class="k"><span class="dot" style="background:${stageColor(b.stage)}"></span>${esc(b.emoji)} ${esc(b.code)}</div>
+        <div class="v" style="color:var(--copper-lt)">${temp}<small>°C</small></div>
+        <div class="hint" style="margin-top:2px">🫧 ${esc(b.bubble||'—')} · Day ${dayNum(b)}</div>
+        <div class="hint">${esc(b.yeast||'')}${b.yeast?' · ':''}${esc(b.sugar||'')}</div>
+        <div class="hint">SG ${esc(b.currentGravity||'—')} · ABV~ ${abvEstimate(b)}</div>
+        <div class="hint">Finish ${b.finish?fmtDate(b.finish):'—'}</div>
+      </div>`;
+    }).join('')+`</div></div></div>`;
+}
+function prepRow(k,label,b){return `<div class="check ${b.prep[k]?'on':''}" onclick="togglePrep('${b.id}','${k}')"><div class="box">✓</div><div class="ctxt">${label}</div></div>`;}
+function togglePrep(bid,k){const b=db.batches.find(x=>x.id===bid);b.prep[k]=!b.prep[k];save();renderView();}
+function invWatchHTML(){
+  const low=db.inventory.filter(i=>Number(i.qty)<Number(i.min));
+  if(!low.length)return '<div class="hint">All stock above minimum. 👍</div>';
+  return low.map(i=>`<div class="lrow"><div class="nm">${esc(i.name)}<div class="sub">${esc(i.qty)} ${esc(i.unit)} · min ${esc(i.min)}</div></div><span class="chip low">LOW</span></div>`).join('');
+}
+function timelineHTML(b){
+  const c=stageIdx(b.stage);
+  return `<div class="timeline">`+STAGES.map((s,i)=>{
+    const cls=i===c?'cur':'';const on=i<=c;
+    return `<div class="stg"><div class="stnode ${cls}" style="color:${s.c}" onclick="setStage('${b.id}','${s.k}')">
+      <div class="stbead" style="background:${on?s.c:'#15161a'};border-color:${on?s.c:'#43464d'};color:${on?'#fff':'#6b6e73'}">${i<c?'✓':(i===c?'●':'')}</div>
+      <div class="lbl" style="${i===c?'color:var(--cream)':''}">${s.l}</div></div>
+      ${i<STAGES.length-1?`<div class="stbar" style="background:${i<c?s.c:'#43464d'}"></div>`:''}</div>`;
+  }).join('')+`</div>`;
+}
+function setStage(bid,k){const b=db.batches.find(x=>x.id===bid);b.stage=k;save();renderView();}
+
+/* ---------- FERMENTATION ---------- */
+function vFerment(b){
+  return `
+  <div class="card"><div class="card-h"><span class="eyebrow">${esc(b.code)} · ${brandName(b.brand)}</span><h2>Fermentation Panel</h2></div>
+    <div class="card-b">
+      <div class="row">
+        <div class="field"><label>Product</label><input value="${esc(b.product)}" onchange="setField('product',this.value)"></div>
+        <div class="field"><label>Yeast</label><input value="${esc(b.yeast)}" onchange="setField('yeast',this.value)"></div>
+        <div class="field"><label>Sugar type</label><input value="${esc(b.sugar)}" onchange="setField('sugar',this.value)"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Start gravity (OG)</label><input value="${esc(b.startGravity)}" placeholder="1.080" onchange="setField('startGravity',this.value)"></div>
+        <div class="field"><label>Current gravity (SG)</label><input value="${esc(b.currentGravity)}" placeholder="1.010" onchange="setField('currentGravity',this.value)"></div>
+        <div class="field"><label>Predicted final (FG)</label><input value="${esc(b.predictedFG)}" placeholder="0.995" onchange="setField('predictedFG',this.value)"></div>
+        <div class="field"><label>Current temp °C</label><input value="${esc(b.temp)}" onchange="setField('temp',this.value)"></div>
+      </div>
+      ${gravityBar(b)}
+      <div class="field wide"><label>Bubble activity</label><div class="radios">${BUBBLE.map(o=>`<div class="opt ${b.bubble===o?'on':''}" onclick="setField('bubble','${o}')">${o}</div>`).join('')}</div></div>
+      <div class="row">
+        <div class="field"><label>Smell</label><select onchange="setField('smell',this.value)">${SMELLS.map(s=>`<option ${b.smell===s?'selected':''} value="${s}">${s||'—'}</option>`).join('')}</select></div>
+        <div class="field" style="flex:2"><label>Estimated ABV so far</label><input value="${abvEstimate(b)}" disabled></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end"><button class="btn" onclick="logFromFerment()">Save reading to journal</button></div>
+    </div></div>
+  <div class="card"><div class="card-h"><span class="eyebrow">Diary</span><h2>Journal</h2><button class="btn sm" onclick="toggleJForm()">+ Add check-in</button></div>
+    <div class="card-b" id="jformHolder"></div>
+    <div class="card-b" style="padding-top:0">${b.log.length?[...b.log].sort((x,y)=>new Date(y.when)-new Date(x.when)).map(e=>renderEntry(b,e)).join(''):'<div class="hint">No check-ins yet.</div>'}</div>
+  </div>`;
+}
+function gravityBar(b){
+  const og=parseFloat(b.startGravity),sg=parseFloat(b.currentGravity),fg=parseFloat(b.predictedFG);
+  if(!og||!fg)return `<div class="hint" style="margin-bottom:12px">Enter OG and predicted FG to see fermentation progress.</div>`;
+  let pct=sg?Math.min(100,Math.max(0,((og-sg)/(og-fg))*100)):0;
+  return `<div style="margin:2px 0 14px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted)"><span>OG ${og.toFixed(3)}</span><span>${Math.round(pct)}% attenuated</span><span>FG ${fg.toFixed(3)}</span></div>
+    <div style="height:10px;background:#15161a;border:1px solid var(--line2);border-radius:6px;overflow:hidden;margin-top:5px"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--copper),#d9a441)"></div></div></div>`;
+}
+function abvEstimate(b){const og=parseFloat(b.startGravity),sg=parseFloat(b.currentGravity||b.predictedFG);if(!og||!sg)return'—';return((og-sg)*131.25).toFixed(1)+' %';}
+function setField(k,v){activeBatch()[k]=v;save();renderView();}
+function logFromFerment(){const b=activeBatch();b.log.push({id:uid(),when:new Date().toISOString().slice(0,16),stage:b.stage,temp:b.temp,bubble:b.bubble,smell:b.smell,note:"Reading logged from fermentation panel.",photos:[]});save();renderView();}
+
+/* journal */
+let pending=[];
+function renderEntry(b,e,compact){
+  const t=[];
+  if(e.stage)t.push(`<span class="tag" style="border-color:${stageColor(e.stage)}66">${stageLabel(e.stage)}</span>`);
+  if(e.temp)t.push(`<span class="tag">🌡️ ${esc(e.temp)}°C</span>`);
+  if(e.bubble)t.push(`<span class="tag">🫧 ${esc(e.bubble)}</span>`);
+  if(e.smell)t.push(`<span class="tag">👃 ${esc(e.smell)}</span>`);
+  return `<div class="entry"><div class="ed"></div><div style="flex:1;min-width:0">
+    <div class="ewhen">${fmtWhen(e.when)} ${compact?'':`<button class="btn red del" style="font-size:11px" onclick="delEntry('${b.id}','${e.id}')">delete</button>`}</div>
+    ${t.length?`<div class="etags">${t.join('')}</div>`:''}
+    ${e.note?`<div class="enote">${esc(e.note)}</div>`:''}
+    ${e.photos&&e.photos.length?`<div class="ephotos">${e.photos.map(p=>`<img src="${p}" onclick="openLB(this.src)">`).join('')}</div>`:''}
+  </div></div>`;
+}
+function toggleJForm(){
+  const h=document.getElementById('jformHolder');if(h.innerHTML){h.innerHTML='';pending=[];return;}
+  pending=[];const now=new Date();const local=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,16);const b=activeBatch();
+  h.innerHTML=`<div class="row"><div class="field" style="flex:0 0 210px"><label>When</label><input type="datetime-local" id="j-when" value="${local}"></div>
+    <div class="field" style="flex:0 0 120px"><label>Temp °C</label><input id="j-temp" inputmode="decimal" placeholder="18"></div>
+    <div class="field"><label>Stage</label><select id="j-stage">${STAGES.map(s=>`<option value="${s.k}" ${s.k===b.stage?'selected':''}>${s.l}</option>`).join('')}</select></div></div>
+    <div class="row"><div class="field"><label>Bubble activity</label><select id="j-bub"><option value=""></option>${BUBBLE.map(o=>`<option>${o}</option>`).join('')}</select></div>
+    <div class="field"><label>Smell</label><select id="j-smell">${SMELLS.map(s=>`<option value="${s}">${s||'—'}</option>`).join('')}</select></div></div>
+    <div class="field wide"><label>Notes</label><textarea id="j-note" placeholder="Activity, aroma, actions, hydrometer reading…"></textarea></div>
+    <div class="field wide"><label>Photos</label><input type="file" accept="image/*" multiple onchange="addPhotos(this)"><div class="thumbs" id="j-thumbs"></div></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn ghost sm" onclick="toggleJForm()">Cancel</button><button class="btn sm" onclick="saveEntry()">Save check-in</button></div>`;
+}
+function addPhotos(input){const files=[...input.files];input.value="";files.forEach(file=>{const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{const max=1000;let w=img.width,h=img.height;if(w>max||h>max){const s=Math.min(max/w,max/h);w=Math.round(w*s);h=Math.round(h*s);}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);pending.push(c.toDataURL('image/jpeg',0.72));drawThumbs();};img.src=ev.target.result;};r.readAsDataURL(file);});}
+function drawThumbs(){const box=document.getElementById('j-thumbs');if(!box)return;box.innerHTML=pending.map((p,i)=>`<div class="thumb"><img src="${p}"><button class="x" onclick="rmThumb(${i})">&times;</button></div>`).join('');}
+function rmThumb(i){pending.splice(i,1);drawThumbs();}
+function saveEntry(){const b=activeBatch();const when=document.getElementById('j-when').value||new Date().toISOString().slice(0,16);const temp=document.getElementById('j-temp').value.trim();const bubble=document.getElementById('j-bub').value;const smell=document.getElementById('j-smell').value;const stage=document.getElementById('j-stage').value;const note=document.getElementById('j-note').value.trim();if(!temp&&!bubble&&!note&&!pending.length&&!smell){alert("Add a temp, note or photo first.");return;}b.log.push({id:uid(),when,stage,temp,bubble,smell,note,photos:pending.slice()});if(temp)b.temp=temp;if(bubble)b.bubble=bubble;if(smell)b.smell=smell;if(stage)b.stage=stage;pending=[];save();renderView();}
+function delEntry(bid,eid){if(!confirm("Delete this check-in?"))return;const b=db.batches.find(x=>x.id===bid);b.log=b.log.filter(x=>x.id!==eid);save();renderView();}
+
+/* ---------- DISTILLATION ---------- */
+function vDistill(b){
+  const d=b.distill;const f=(k,l,ph)=>`<div class="field"><label>${l}</label><input value="${esc(d[k])}" placeholder="${ph||''}" onchange="setDistill('${k}',this.value)"></div>`;
+  return `
+  <div class="card"><div class="card-h"><span class="eyebrow">${esc(b.code)}</span><h2>Distillation Run</h2><span class="tag">⚗️ Still: ${esc(db.stillType||'Reflux (T500)')}</span></div>
+    <div class="card-b">
+      <div class="hint" style="margin-bottom:12px">Reflux still — run slow for a clean neutral cut, then flavour with essence or rest on fruit/barrel later. Change still type in Settings.</div>
+      <div class="row">${f('boiler','Boiler volume (L)','25')}${f('cooling','Cooling water')}${f('waterTemp','Water temp °C')}${f('startTime','Start time','09:00')}</div>
+      <div class="row">${f('heads','Heads (mL)')}${f('hearts','Hearts (mL)')}${f('tails','Tails (mL)')}</div>
+      <div class="row">${f('totalAlc','Total alcohol (L)')}${f('outputPct','Output ABV %')}${f('speed','Collection speed','3 L/hr')}</div>
+      <div class="field wide"><label>Run notes</label><textarea onchange="setDistill('notes',this.value)">${esc(d.notes)}</textarea></div>
+    </div></div>
+  <div class="card"><div class="card-h"><span class="eyebrow">Tool</span><h2>Dilution Calculator</h2></div>
+    <div class="card-b">
+      <div class="row"><div class="field"><label>Collected litres</label><input id="dc-l" type="number" step="0.01" placeholder="5" oninput="calcDilution()"></div>
+        <div class="field"><label>Collected ABV %</label><input id="dc-abv" type="number" step="0.1" placeholder="60" oninput="calcDilution()"></div>
+        <div class="field"><label>Target ABV %</label><input id="dc-target" type="number" step="0.1" placeholder="40" oninput="calcDilution()"></div></div>
+      <div id="dc-out" class="tiles"></div>
+      <div class="hint" style="margin-top:8px">Add water gradually and re-check with your alcoholmeter — measure at 20°C for accuracy.</div>
+    </div></div>`;
+}
+function setDistill(k,v){activeBatch().distill[k]=v;save();}
+function calcDilution(){const L=parseFloat(document.getElementById('dc-l').value),a=parseFloat(document.getElementById('dc-abv').value),t=parseFloat(document.getElementById('dc-target').value);const out=document.getElementById('dc-out');
+  if(!L||!a||!t||t<=0){out.innerHTML=`<div class="tile hot"><div class="k">Add water</div><div class="v">— <small>L</small></div></div><div class="tile"><div class="k">Final volume</div><div class="v">— <small>L</small></div></div>`;return;}
+  if(t>a){out.innerHTML=`<div class="tile"><div class="k">Add water</div><div class="v" style="font-size:14px;color:#e0757b">Target can't exceed collected ABV</div></div>`;return;}
+  const fv=L*a/t,water=fv-L;out.innerHTML=`<div class="tile hot"><div class="k">Add water</div><div class="v">${water.toFixed(2)} <small>L</small></div></div><div class="tile"><div class="k">Final volume</div><div class="v">${fv.toFixed(2)} <small>L</small></div></div><div class="tile"><div class="k">That's</div><div class="v">${(water*1000).toFixed(0)} <small>mL</small></div></div>`;}
+
+/* ---------- RECIPES ---------- */
+function vRecipes(b){
+  const cats=["Core","Future","Limited"];
+  const intro=`<div class="card"><div class="card-b hint">Core schnapps are flavoured over your sugar-wash neutral spirit (essence, no fruit needed) — they suit the current setup. The <em>Future</em> fruit ferments and <em>Limited</em> barrel/pálinka runs come once you start working with fruit.</div></div>`;
+  return intro+cats.map(cat=>`<div class="card"><div class="card-h"><span class="eyebrow">${cat==='Core'?'In rotation':cat==='Future'?'Planned':'Special'}</span><h2>${cat} Range</h2>${cat==='Core'?'<button class="btn sm" onclick="addRecipe()">+ Add</button>':''}</div>
+    <div class="card-b">${db.recipes.filter(r=>r.cat===cat).map(r=>`<div class="lrow">
+      <span class="brandbadge ${r.brand}">${brandEmoji(r.brand)}</span>
+      <div class="nm">${esc(r.name)}<div class="sub">${esc(r.notes||'No procedure notes yet — edit to add ingredients, fermentation, cuts, ageing, tasting.')}</div></div>
+      <span class="chip ${r.difficulty==='Hard'?'low':'ok'}">${esc(r.difficulty)}</span>
+      <button class="btn ghost sm" onclick="editRecipe('${r.id}')">Edit</button>
+      <button class="btn red sm" onclick="delRecipe('${r.id}')">✕</button></div>`).join('')||'<div class="hint">None yet.</div>'}</div></div>`).join('');
+}
+function addRecipe(){const n=prompt("Recipe name?");if(!n)return;db.recipes.push({id:uid(),name:n,brand:"hammer",cat:"Core",difficulty:"Medium",notes:""});save();renderView();}
+function editRecipe(id){const r=db.recipes.find(x=>x.id===id);const n=prompt("Procedure / notes (ingredients, fermentation, cuts, ageing, tasting):",r.notes||"");if(n===null)return;r.notes=n;const d=prompt("Difficulty (Easy/Medium/Hard):",r.difficulty);if(d)r.difficulty=d;save();renderView();}
+function delRecipe(id){if(!confirm("Delete recipe?"))return;db.recipes=db.recipes.filter(x=>x.id!==id);save();renderView();}
+
+/* ---------- INVENTORY ---------- */
+function vInventory(b){
+  const groups=[...new Set(db.inventory.map(i=>i.grp||'Other'))];
+  return `<div class="card"><div class="card-h"><span class="eyebrow">Store room</span><h2>Inventory</h2><button class="btn sm" onclick="addInv()">+ Add item</button></div>
+    <div class="card-b">${groups.map(g=>`<div style="margin-bottom:6px"><div class="eyebrow" style="margin:10px 0 4px">${esc(g)}</div>${db.inventory.filter(i=>(i.grp||'Other')===g).map(it=>{const low=Number(it.qty)<Number(it.min);return `<div class="lrow"><div class="nm">${esc(it.name)}<div class="sub">min ${esc(it.min)} ${esc(it.unit)}</div></div><span class="chip ${low?'low':'ok'}">${low?'LOW':'OK'}</span><input class="qty" type="number" value="${esc(it.qty)}" onchange="setInv('${it.id}','qty',this.value)"><span class="sub" style="width:56px">${esc(it.unit)}</span><button class="btn red sm" onclick="delInv('${it.id}')">✕</button></div>`;}).join('')}</div>`).join('')}</div></div>`;
+}
+function setInv(id,k,v){db.inventory.find(x=>x.id===id)[k]=v;save();renderView();}
+function addInv(){const n=prompt("Item name?");if(!n)return;const g=prompt("Group (Base/Botanicals/Fruit/Packaging/Cleaning):","Base")||"Other";db.inventory.push({id:uid(),name:n,qty:0,unit:"units",min:0,grp:g});save();renderView();}
+function delInv(id){if(!confirm("Remove item?"))return;db.inventory=db.inventory.filter(x=>x.id!==id);save();renderView();}
+
+/* ---------- BOTTLES ---------- */
+function vBottles(b){
+  const bt=b.bottling;const shots=[];b.log.forEach(e=>{if(['bottling','labelling','ready'].includes(e.stage))(e.photos||[]).forEach(p=>shots.push({p,when:e.when,stage:e.stage}));});
+  return `
+  <div class="card"><div class="card-h"><span class="eyebrow">${esc(b.code)}</span><h2>Bottling Record</h2></div>
+    <div class="card-b">
+      <div class="row">
+        <div class="field"><label>Bottle size (mL)</label><input value="${esc(bt.size)}" onchange="setBottle('size',this.value)"></div>
+        <div class="field"><label>Bottles filled</label><input value="${esc(bt.count)}" onchange="setBottle('count',this.value)"></div>
+        <div class="field"><label>Bottled date</label><input type="date" value="${esc(bt.date)}" onchange="setBottle('date',this.value)"></div>
+        <div class="field"><label>Total yield (L)</label><input value="${esc(b.yieldL)}" placeholder="12.1" onchange="setField('yieldL',this.value)"></div>
+      </div>
+      <div class="field wide"><label>Notes</label><textarea onchange="setBottle('notes',this.value)">${esc(bt.notes)}</textarea></div>
+      <div class="hint">${bt.count&&bt.size?`≈ ${((parseFloat(bt.count)*parseFloat(bt.size))/1000).toFixed(1)} L bottled`:''}</div>
+    </div></div>
+  <div class="card"><div class="card-h"><span class="eyebrow">Finished goods</span><h2>Bottle Photos</h2></div>
+    <div class="card-b">${shots.length?`<div class="gal">${shots.map(s=>`<figure><img src="${s.p}" onclick="openLB(this.src)"><figcaption>${stageLabel(s.stage)}</figcaption></figure>`).join('')}</div>`:'<div class="hint">Add photos on a Bottling / Labelling / Ready check-in and they\'ll show here.</div>'}</div></div>`;
+}
+function setBottle(k,v){activeBatch().bottling[k]=v;save();if(k==='count'||k==='size')renderView();}
+
+/* ---------- LABELS ---------- */
+function vLabels(b){
+  return `<div class="grid2">
+    <div class="card"><div class="card-h"><span class="eyebrow">Bottle</span><h2>Label Generator</h2></div><div class="card-b">
+      <div class="row"><div class="field"><label>Brand</label><select id="l-brand" onchange="drawLabel()"><option value="hammer" ${b.brand==='hammer'?'selected':''}>🔨 Hungarian Hammer</option><option value="palinka" ${b.brand==='palinka'?'selected':''}>🫏 Pálinka Banda</option></select></div>
+        <div class="field"><label>Product</label><input id="l-prod" value="${esc(b.product)}" oninput="drawLabel()"></div></div>
+      <div class="row"><div class="field"><label>Batch code</label><input id="l-batch" value="${esc(b.code)}" oninput="drawLabel()"></div>
+        <div class="field"><label>ABV %</label><input id="l-abv" value="${esc(b.abv||'40')}" oninput="drawLabel()"></div></div>
+      <div class="row"><div class="field"><label>Distilled date</label><input id="l-date" type="date" value="${esc(b.finish||'')}" oninput="drawLabel()"></div>
+        <div class="field"><label>Bottle #</label><input id="l-num" value="1" oninput="drawLabel()"></div>
+        <div class="field"><label>of</label><input id="l-of" value="${esc(b.bottling.count||'12')}" oninput="drawLabel()"></div></div>
+      <button class="btn steel" onclick="printLabel()">🖨️ Print / Save as PDF</button>
+    </div></div>
+    <div class="card"><div class="card-h"><span class="eyebrow">Preview</span><h2>Bottle Label</h2></div><div class="card-b"><div id="labelWrap"></div></div></div>
+  </div>`;
+}
+function drawLabel(){const g=id=>document.getElementById(id)?document.getElementById(id).value:'';const brand=g('l-brand');const emoji=brand==='hammer'?'🔨':'🫏';const name=brand==='hammer'?'Hungarian Hammer':'Fütyülős Pálinka Banda';const tl=brand==='hammer'?'Forged in South Australia':'Hungarian tradition · SA fruit';const date=g('l-date')?new Date(g('l-date')+'T00:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'';const w=document.getElementById('labelWrap');if(!w)return;
+  w.innerHTML=`<div class="label-preview" id="labelPrintable"><div class="lp-emoji">${emoji}</div><div class="lp-brand" style="font-size:${name.length>18?'16px':'21px'}">${esc(name)}</div><div class="lp-tl">${esc(tl)}</div><div class="lp-rule"></div><div class="lp-prod">${esc(g('l-prod'))}</div><div class="lp-abv">${esc(g('l-abv'))}%</div><div class="lp-meta">Distilled ${esc(date)}</div><div class="lp-batch">Batch ${esc(g('l-batch'))} · Bottle ${esc(g('l-num'))} / ${esc(g('l-of'))}</div></div>`;}
+function printLabel(){const node=document.getElementById('labelPrintable');if(!node)return;const w=window.open('','_blank');w.document.write(`<html><head><title>Label</title><style>body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;font-family:Georgia,serif}.label-preview{background:#F5EFE6;color:#1a1512;border-radius:5px;padding:24px;width:320px;text-align:center;border:1px solid #d8cdbb}.lp-emoji{font-size:30px}.lp-brand{font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:4px 0}.lp-tl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7a6f60}.lp-rule{height:2px;background:#1a1512;margin:9px auto;width:58%}.lp-prod{font-size:17px;letter-spacing:2px;text-transform:uppercase;margin:6px 0}.lp-abv{font-size:27px;font-weight:700}.lp-meta{font-size:10.5px;letter-spacing:1px;color:#5a5148;margin-top:10px;text-transform:uppercase}.lp-batch{font-size:11.5px;font-weight:700;letter-spacing:2px;margin-top:6px}</style></head><body>${node.outerHTML}</body></html>`);w.document.close();setTimeout(()=>w.print(),300);}
+
+/* ---------- SALES ---------- */
+function vSales(b){
+  const total=db.sales.reduce((a,s)=>a+(parseFloat(s.price)||0)*(parseFloat(s.qty)||0),0);
+  const units=db.sales.reduce((a,s)=>a+(parseFloat(s.qty)||0),0);
+  return `<div class="card"><div class="card-h"><span class="eyebrow">Shared with mates</span><h2>Sales &amp; Gifting Log</h2><button class="btn sm" onclick="addSale()">+ Record</button></div>
+    <div class="card-b">
+      <div class="tiles" style="margin-bottom:14px"><div class="tile hot"><div class="k">Value moved</div><div class="v">$${total.toFixed(0)}</div></div><div class="tile"><div class="k">Bottles out</div><div class="v">${units}</div></div><div class="tile"><div class="k">Records</div><div class="v">${db.sales.length}</div></div></div>
+      ${db.sales.length?db.sales.slice().reverse().map(s=>`<div class="lrow"><div class="nm">${esc(s.product||'—')} <span class="sub">→ ${esc(s.buyer||'—')}</span><div class="sub">${fmtDate(s.date)}${s.notes?' · '+esc(s.notes):''}</div></div><span class="tag">${esc(s.qty||'0')} btl</span><span class="tag">$${esc(s.price||'0')}</span><button class="btn red sm" onclick="delSale('${s.id}')">✕</button></div>`).join(''):'<div class="hint">No sales or gifts logged yet. This is for tracking who got what — mates, markets, gifts.</div>'}
+    </div></div>`;
+}
+function addSale(){const product=prompt("Product / batch:");if(product===null)return;const buyer=prompt("Who / where:")||"";const qty=prompt("Bottles:","1")||"";const price=prompt("Price per bottle ($, 0 if gift):","0")||"0";const notes=prompt("Notes:")||"";db.sales.push({id:uid(),date:new Date().toISOString().slice(0,10),product,buyer,qty,price,notes});save();renderView();}
+function delSale(id){if(!confirm("Delete record?"))return;db.sales=db.sales.filter(x=>x.id!==id);save();renderView();}
+
+/* ---------- EXPERIMENTS ---------- */
+function vExperiments(b){
+  return `<div class="card"><div class="card-h"><span class="eyebrow">The lab</span><h2>Experiments</h2><button class="btn sm" onclick="addExp()">+ New experiment</button></div>
+    <div class="card-b">${db.experiments.length?db.experiments.slice().reverse().map(x=>`<div class="entry"><div class="ed"></div><div style="flex:1"><div class="ewhen">${fmtDate(x.date)} · <strong style="color:var(--cream)">${esc(x.title)}</strong> <button class="btn red del" style="font-size:11px" onclick="delExp('${x.id}')">delete</button></div><div class="enote">${esc(x.note)}</div><div style="margin-top:6px"><button class="btn ghost sm" onclick="editExp('${x.id}')">Edit</button></div></div></div>`).join(''):'<div class="hint">No experiments yet. Log recipe tweaks, sugar/yeast trials, barrel tests, cut variations.</div>'}</div></div>`;
+}
+function addExp(){const title=prompt("Experiment title:");if(!title)return;const note=prompt("Hypothesis / what you're testing:")||"";db.experiments.push({id:uid(),title,date:new Date().toISOString().slice(0,10),note});save();renderView();}
+function editExp(id){const x=db.experiments.find(e=>e.id===id);const n=prompt("Notes / results:",x.note);if(n===null)return;x.note=n;save();renderView();}
+function delExp(id){if(!confirm("Delete experiment?"))return;db.experiments=db.experiments.filter(x=>x.id!==id);save();renderView();}
+
+/* ---------- ANALYTICS ---------- */
+function vAnalytics(b){
+  const bs=db.batches;
+  const wy=bs.filter(x=>parseFloat(x.yieldL));const avgY=wy.length?(wy.reduce((a,x)=>a+parseFloat(x.yieldL),0)/wy.length).toFixed(1):'—';
+  const wa=bs.filter(x=>parseFloat(x.abv));const avgA=wa.length?(wa.reduce((a,x)=>a+parseFloat(x.abv),0)/wa.length).toFixed(1):'—';
+  const rc={};bs.forEach(x=>rc[x.product]=(rc[x.product]||0)+1);const fav=Object.keys(rc).sort((a,c)=>rc[c]-rc[a])[0]||'—';
+  return `
+  <div class="card"><div class="card-h"><span class="eyebrow">Production</span><h2>Statistics</h2></div>
+    <div class="card-b"><div class="tiles">
+      <div class="tile"><div class="k">Total batches</div><div class="v">${bs.length}</div></div>
+      <div class="tile hot"><div class="k">Avg yield</div><div class="v">${avgY}<small> L</small></div></div>
+      <div class="tile hot"><div class="k">Avg ABV</div><div class="v">${avgA}<small> %</small></div></div>
+      <div class="tile"><div class="k">Favourite recipe</div><div class="v" style="font-size:17px">${esc(fav)}</div></div>
+    </div></div></div>
+  <div class="grid2" style="margin-top:16px">
+    <div class="card"><div class="card-h"><span class="eyebrow">${esc(b.code)}</span><h2>Temperature</h2></div><div class="card-b"><div style="height:230px"><canvas id="chTemp"></canvas></div></div></div>
+    <div class="card"><div class="card-h"><span class="eyebrow">Trial</span><h2>Sugar Comparison</h2></div><div class="card-b"><div style="height:230px"><canvas id="chSugar"></canvas></div></div></div>
+  </div>
+  <div class="card" style="margin-top:16px"><div class="card-h"><span class="eyebrow">Legacy</span><h2>🏆 Wall of Fame</h2></div>
+    <div class="card-b"><div class="wof">${db.batches.map(x=>fameCard(x)).join('')}</div></div></div>`;
+}
+function drawStats(){
+  const b=activeBatch();const pts=b.log.filter(e=>e.temp).sort((x,y)=>new Date(x.when)-new Date(y.when));
+  const t=document.getElementById('chTemp');
+  if(t)charts.push(new Chart(t,{type:'line',data:{labels:pts.map(p=>new Date(p.when).toLocaleDateString(undefined,{day:'numeric',month:'short'})),datasets:[{label:'°C',data:pts.map(p=>parseFloat(p.temp)),borderColor:'#d6934c',backgroundColor:'#b8733333',tension:.3,fill:true,pointRadius:3}]},options:opts('°C')}));
+  const score={None:0,Slow:1,Moderate:2,Fast:3,Violent:4};const by={};
+  db.batches.forEach(bt=>{const key=/super|turbo/i.test(bt.sugar)?'Turbo sugar':'Dextrose';const peak=Math.max(0,...bt.log.map(e=>score[e.bubble]||0));by[key]=Math.max(by[key]||0,peak);});
+  const s=document.getElementById('chSugar');const labels=Object.keys(by);
+  if(s)charts.push(new Chart(s,{type:'bar',data:{labels,datasets:[{label:'Peak activity (0–4)',data:labels.map(k=>by[k]),backgroundColor:['#B87333','#8C8F94']}]},options:opts('Peak',4)}));
+}
+function opts(u,max){return{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8C8F94'}}},scales:{x:{ticks:{color:'#8C8F94'},grid:{color:'#3a3d4433'}},y:{suggestedMax:max,ticks:{color:'#8C8F94'},grid:{color:'#3a3d4433'}}}};}
+function medalEmoji(m){return m==='Gold'?'🥇':m==='Silver'?'🥈':m==='Bronze'?'🥉':'';}
+function stars(n){n=Number(n)||0;return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n);}
+function fameCard(b){return `<div class="fame"><div class="medal">${medalEmoji(b.score.medal)}</div><h3>${esc(b.emoji)} ${esc(b.code)}</h3><div class="nick">"${esc(b.nick||b.product)}"</div>
+  <div class="fg"><div class="k">Started</div><div>${fmtDate(b.start)}</div><div class="k">Distilled</div><div>${fmtDate(b.finish)}</div><div class="k">Yield</div><div>${b.yieldL?esc(b.yieldL)+' L':'—'}</div><div class="k">ABV</div><div>${b.abv?esc(b.abv)+'%':'—'}</div><div class="k">Rating</div><div class="stars">${stars(b.score.rating)}</div></div>
+  <div style="margin-top:11px"><button class="btn ghost sm" onclick="scoreBatch('${b.id}')">Score / edit</button></div></div>`;}
+function scoreBatch(id){const b=db.batches.find(x=>x.id===id);const yl=prompt("Yield (L):",b.yieldL||"");if(yl!==null)b.yieldL=yl;const ab=prompt("Final ABV %:",b.abv||"");if(ab!==null)b.abv=ab;const nk=prompt("Nickname:",b.nick||"");if(nk!==null)b.nick=nk;const ts=prompt("Taste notes:",b.score.taste||"");if(ts!==null)b.score.taste=ts;const r=prompt("Rating 1–5:",b.score.rating||"");if(r!==null)b.score.rating=Math.max(0,Math.min(5,parseInt(r)||0));const m=prompt("Medal (Gold/Silver/Bronze or blank):",b.score.medal||"");if(m!==null)b.score.medal=m;save();renderView();}
+
+/* ---------- SETTINGS ---------- */
+function vSettings(b){
+  let bytes=0;try{bytes=(localStorage.getItem(LS_KEY)||'').length;}catch(e){}
+  return `<div class="card"><div class="card-h"><span class="eyebrow">Right now</span><h2>Current Setup</h2></div>
+    <div class="card-b">
+      <div class="row">
+        <div class="field"><label>Still type</label><input value="${esc(db.stillType||'Reflux (T500)')}" onchange="db.stillType=this.value;save()"></div>
+        <div class="field"><label>Base wash</label><input value="Sugar + water + yeast" disabled></div>
+      </div>
+      <p class="hint">Current reality: straight sugar-wash neutral spirit on the T500 reflux still. No fruit in play yet — the fruit/pálinka ferments and barrel work are on the roadmap. Core schnapps (peppermint, peach, apple) are made by flavouring the neutral spirit with essence, so they fit the current setup without needing fresh fruit.</p>
+    </div></div>
+  <div class="card"><div class="card-h"><span class="eyebrow">The workshop</span><h2>Settings &amp; Data</h2></div>
+    <div class="card-b">
+      <p class="hint">Everything lives on this device. Back it up regularly — especially before clearing your browser.</p>
+      <div class="row" style="margin-top:8px">
+        <div class="field"><label>Storage used</label><input value="${(bytes/1024).toFixed(0)} KB" disabled></div>
+        <div class="field"><label>Batches / photos</label><input value="${db.batches.length} batches · ${db.batches.reduce((a,x)=>a+x.log.reduce((c,e)=>c+(e.photos?e.photos.length:0),0),0)} photos" disabled></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+        <button class="btn green" onclick="exportData()">⬇ Export backup (JSON)</button>
+        <button class="btn ghost" onclick="document.getElementById('importFile').click()">⬆ Import backup</button>
+        <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importData(this)">
+        <button class="btn ghost" onclick="resetSeed()">↺ Restore sample data</button>
+      </div>
+      <div style="margin-top:14px"><button class="btn red" onclick="wipeAll()">Delete everything</button></div>
+    </div></div>
+  <div class="card"><div class="card-h"><span class="eyebrow">Identity</span><h2>Brand Notes</h2></div>
+    <div class="card-b">
+      <p><strong style="font-family:var(--serif);color:var(--copper-lt)">🔨 Hungarian Hammer</strong> — master brand · vodka, gin, limited & barrel series. <em>Forged in South Australia.</em></p>
+      <p><strong style="font-family:var(--serif);color:#e0757b">🫏 Fütyülős Pálinka Banda</strong> — heritage schnapps range (peppermint, peach, apple + future fruit). <em>Hungarian tradition, South Australian fruit.</em></p>
+      <p class="hint">Palette: matte black #0D0D0D · gunmetal #2B2E34 · copper #B87333 · steel #8C8F94 · burgundy #8B1E1E · cream #F5EFE6 · Hungarian red #C8102E · forest green #225E3E.</p>
+    </div></div>`;
+}
+function exportData(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hungarian-hammer-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();}
+function importData(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(!d.batches)throw 0;db=d;save();alert("Backup restored.");renderAll();}catch(err){alert("That doesn't look like a valid backup file.");}};r.readAsText(f);}
+function resetSeed(){if(!confirm("Replace current data with the sample HH-001 / TD-001 setup?"))return;db=seed();save();renderAll();}
+function wipeAll(){if(!confirm("Delete ALL batches, logs and photos? This can't be undone."))return;if(!confirm("Really sure? Export a backup first if unsure."))return;localStorage.removeItem(LS_KEY);db=seed();db.batches=[];save();location.reload();}
+
+/* ---------- new batch ---------- */
+function openBatchModal(){document.getElementById('nbStart').value=new Date().toISOString().slice(0,10);['nbCode','nbNick','nbProduct','nbYeast','nbSugar','nbFinish'].forEach(i=>document.getElementById(i).value='');document.getElementById('nbEmoji').value='🔨';document.getElementById('batchModal').classList.add('open');}
+function closeBatchModal(){document.getElementById('batchModal').classList.remove('open');}
+function saveBatch(){const code=document.getElementById('nbCode').value.trim();if(!code){alert("Give the batch a code, e.g. HH-002.");return;}const brand=document.getElementById('nbBrand').value;const nb={id:uid(),code,emoji:document.getElementById('nbEmoji').value.trim()||brandEmoji(brand),brand,nick:document.getElementById('nbNick').value.trim(),product:document.getElementById('nbProduct').value.trim(),yeast:document.getElementById('nbYeast').value.trim(),sugar:document.getElementById('nbSugar').value.trim(),startGravity:"",predictedFG:"0.995",currentGravity:"",start:document.getElementById('nbStart').value,finish:document.getElementById('nbFinish').value,stage:"fermentation",temp:"",bubble:"None",smell:"",prep:{water:false,cleaning:false,jars:false,cuts:false,notes:""},distill:{boiler:"",cooling:"",startTime:"",heads:"",hearts:"",tails:"",totalAlc:"",outputPct:"",speed:"",waterTemp:"",notes:""},bottling:{count:"",size:"700",date:"",notes:""},score:{rating:0,medal:"",taste:""},yieldL:"",abv:"",log:[]};db.batches.push(nb);db.active=nb.id;closeBatchModal();save();renderAll();}
+
+function openLB(src){document.getElementById('lbimg').src=src;document.getElementById('lb').classList.add('open');}
+function closeLB(){document.getElementById('lb').classList.remove('open');}
+
+/* ================= VOICE / AI COMMAND LAYER ================= */
+let recog=null,listening=false,lastParsed=null;
+function initVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const mic=document.getElementById('micBtn');
+  if(!SR){if(mic){mic.style.display='none';}document.getElementById('cmdInput').placeholder="Type what's going on — e.g. “Hungarian Hammer, 16 degrees, bubbling slowly, smells boozy”";return;}
+  recog=new SR();recog.lang='en-AU';recog.interimResults=true;recog.continuous=false;
+  recog.onresult=e=>{let s='';for(let i=0;i<e.results.length;i++)s+=e.results[i][0].transcript;document.getElementById('cmdInput').value=s;};
+  recog.onend=()=>{listening=false;if(mic)mic.classList.remove('on');const v=document.getElementById('cmdInput').value.trim();if(v)runCommand();};
+  recog.onerror=()=>{listening=false;if(mic)mic.classList.remove('on');};
+}
+function toggleMic(){if(!recog)return;if(listening){recog.stop();return;}document.getElementById('cmdInput').value='';listening=true;document.getElementById('micBtn').classList.add('on');try{recog.start();}catch(e){listening=false;document.getElementById('micBtn').classList.remove('on');}}
+
+async function runCommand(){
+  const text=document.getElementById('cmdInput').value.trim();if(!text)return;
+  document.getElementById('cmdResult').innerHTML='<div class="cmdcard"><h4>Working it out…</h4><div class="hint">Reading your note.</div></div>';
+  const p=await interpret(text);lastParsed=p;showResult(p,text);
+}
+
+async function interpret(text){
+  const rule=parseRules(text);
+  try{
+    if(window.cowork&&typeof window.cowork.askClaude==='function'){
+      const prompt='You are a home distilling assistant. Return ONLY minified JSON, no prose. Schema: {"temp":number|null,"bubble":"None"|"Slow"|"Moderate"|"Fast"|"Violent"|null,"smell":"Sweet"|"Bread"|"Fruit"|"Alcohol"|"Sulphur"|"Other"|null,"stage":"fermentation"|"clearing"|"racking"|"distillation"|"carbon"|"dilution"|"bottling"|"labelling"|"ready"|null,"note":"one cleaned sentence in the user's voice","suggestions":["1 to 3 short practical tips for a sugar-wash ferment on a reflux still"]}. Spoken note: '+JSON.stringify(text);
+      const raw=await window.cowork.askClaude(prompt,[]);
+      const s=typeof raw==='string'?raw:(raw&&(raw.text||raw.output||raw.content||raw.response))||'';
+      const j=JSON.parse((String(s).match(/\{[\s\S]*\}/)||['{}'])[0]);
+      return {batch:rule.batch,
+        temp:(j.temp!==undefined&&j.temp!==null)?j.temp:rule.temp,
+        bubble:j.bubble||rule.bubble,smell:j.smell||rule.smell,stage:j.stage||rule.stage,
+        note:j.note||rule.note,
+        suggestions:(Array.isArray(j.suggestions)&&j.suggestions.length)?j.suggestions:rule.suggestions};
+    }
+  }catch(e){}
+  return rule;
+}
+
+function parseRules(text){
+  const t=' '+text.toLowerCase()+' ';
+  const out={batch:null,temp:null,bubble:null,smell:null,stage:null,note:text.trim(),suggestions:[]};
+  if(/turbo|driver|\btd\b|td[-\s]?0?1/.test(t))out.batch='td1';
+  else if(/hammer|hungarian|\bhh\b|hh[-\s]?0?1/.test(t))out.batch='hh1';
+  let m=t.match(/(-?\d{1,2}(?:\.\d)?)\s*(?:degrees|degree|deg|°|celsius|c\b)/);
+  if(!m)m=t.match(/(?:temp\w*|sitting|it's|its|at|around|about)\s*(?:of|is|at|around|about)?\s*(\d{1,2}(?:\.\d)?)\b/);
+  if(m)out.temp=parseFloat(m[1]);
+  if(/not bubbl|no bubbl|isn'?t bubbl|nothing happening|no activity|\bflat\b|\bdead\b|not doing anything|stopped bubbl|no bubbles/.test(t))out.bubble='None';
+  else if(/violent|vigorous|going crazy|erupting|super active|like crazy/.test(t))out.bubble='Violent';
+  else if(/almost constant|constantly|\bconstant\b|non.?stop|every second(?: or so)?|every (?:1|one)(?:\s*(?:to|-|–|and)\s*(?:2|two))?\s*sec|1\s*[-–to ]+2\s*sec|flying|really fast|chugging hard/.test(t))out.bubble='Fast';
+  else if(/every (?:5|five|few|couple|several|3|three|4|four|10|ten)\s*sec|moderate|steady|chugging|good pace|ticking along/.test(t))out.bubble='Moderate';
+  else if(/slow|occasional|every (?:minute|min|2 ?min|two min|20|30)\b|once a min|barely|tapering|slowing|winding down|couple (?:of )?bubbl/.test(t))out.bubble='Slow';
+  else if(/\bfast\b|rapid|quick/.test(t))out.bubble='Fast';
+  if(/sweet/.test(t))out.smell='Sweet';
+  else if(/bread|yeasty|yeast smell|doughy/.test(t))out.smell='Bread';
+  else if(/fruit/.test(t))out.smell='Fruit';
+  else if(/alcohol|booze|boozy|spirit|ethanol|sharp smell/.test(t))out.smell='Alcohol';
+  else if(/sulph|sulf|rotten egg|egg smell/.test(t))out.smell='Sulphur';
+  if(/clearing|going clear|dropping clear/.test(t))out.stage='clearing';
+  else if(/\brack/.test(t))out.stage='racking';
+  else if(/distill|still run|running the still|stripping|spirit run/.test(t))out.stage='distillation';
+  else if(/carbon|filter/.test(t))out.stage='carbon';
+  else if(/dilut|water(?:ing)? down|proofing|bringing.*down to/.test(t))out.stage='dilution';
+  else if(/bottl/.test(t))out.stage='bottling';
+  else if(/\blabel/.test(t))out.stage='labelling';
+  else if(/ready to drink|all done|finished product/.test(t))out.stage='ready';
+  else if(/ferment|bubbl|wash|pitched|day\s*\d|aroma/.test(t))out.stage='fermentation';
+  if(!out.stage&&(out.bubble||out.smell))out.stage='fermentation';
+  out.suggestions=suggestFor(out,t);
+  return out;
+}
+
+function suggestFor(p,t){
+  const s=[];
+  if(p.temp!=null){
+    if(p.temp<16)s.push(`At ${p.temp}°C it's on the cool side — wrap it or move it somewhere warmer to bring it back to 18–20°C for a healthy ferment.`);
+    else if(p.temp>30)s.push(`${p.temp}°C is hot — that risks harsh, solventy flavours. Cool it toward 20–24°C.`);
+    else if(p.temp>=18&&p.temp<=24)s.push(`${p.temp}°C is right in the sweet spot — leave it be.`);
+    else if(p.temp>24&&p.temp<=30)s.push(`${p.temp}°C is a touch warm but fine — just keep an eye it doesn't climb past 30°C.`);
+  }
+  if(p.bubble==='None')s.push("No activity: if it's the first 12–24h that's normal, keep it ~20°C. If it's been days, it's likely finished — take a hydrometer reading before doing anything else.");
+  if(p.bubble==='Violent'||p.bubble==='Fast')s.push("Strong, active ferment — right where you want it. Don't touch it, just hold the temperature steady.");
+  if(p.bubble==='Slow')s.push("Slowing right down usually means it's near the end. Take a gravity reading — if it holds around 0.990–1.000 for two days, it's done and ready to clear.");
+  if(/\bleak/.test(t))s.push("You mentioned a leak — check the tap/seal so you don't lose wash or let air in.");
+  if(p.stage==='clearing')s.push("Let it drop bright and clear fully before racking — patience here means a cleaner spirit.");
+  if(p.stage==='distillation')s.push("Reflux still: run it slow for a clean neutral cut. Bin the foreshots/heads, collect the hearts, then stop into tails.");
+  if(p.stage==='dilution')s.push("Use the Dilution Calculator on the Distillation tab — add water gradually and re-check ABV at 20°C.");
+  if(!s.length)s.push("Logged. Nothing needs action right now — keep the daily check-ins coming.");
+  return s;
+}
+
+function showResult(p,text){
+  const b=(p.batch&&db.batches.find(x=>x.id===p.batch))||activeBatch();
+  const batchOpts=db.batches.map(x=>`<option value="${x.id}" ${x.id===b.id?'selected':''}>${esc(x.emoji)} ${esc(x.code)}</option>`).join('');
+  document.getElementById('cmdResult').innerHTML=`<div class="cmdcard">
+    <h4>Here's what I understood</h4>
+    <div class="hint" style="margin-bottom:11px">Check it, tweak anything, then apply — it fills the fields and adds a journal entry for you.</div>
+    <div class="row">
+      <div class="field"><label>Batch</label><select id="ci-batch">${batchOpts}</select></div>
+      <div class="field"><label>Temp °C</label><input id="ci-temp" value="${p.temp!=null?p.temp:''}"></div>
+      <div class="field"><label>Stage</label><select id="ci-stage"><option value=""></option>${STAGES.map(s=>`<option value="${s.k}" ${s.k===p.stage?'selected':''}>${s.l}</option>`).join('')}</select></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Bubble</label><select id="ci-bubble"><option value=""></option>${BUBBLE.map(o=>`<option ${o===p.bubble?'selected':''}>${o}</option>`).join('')}</select></div>
+      <div class="field"><label>Smell</label><select id="ci-smell">${SMELLS.map(s=>`<option value="${s}" ${s===p.smell?'selected':''}>${s||'—'}</option>`).join('')}</select></div>
+    </div>
+    <div class="field wide"><label>Note</label><textarea id="ci-note">${esc(p.note||text)}</textarea></div>
+    <div style="margin:8px 0 4px"><div class="eyebrow">Suggestions</div>${p.suggestions.map(x=>`<div class="sg"><span class="i">◆</span><span>${esc(x)}</span></div>`).join('')}</div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px"><button class="btn ghost sm" onclick="document.getElementById('cmdResult').innerHTML=''">Dismiss</button><button class="btn sm" onclick="applyCmd()">Apply &amp; log</button></div>
+  </div>`;
+  document.getElementById('cmdResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function applyCmd(){
+  const bid=document.getElementById('ci-batch').value;
+  const b=db.batches.find(x=>x.id===bid)||activeBatch();db.active=b.id;
+  const temp=document.getElementById('ci-temp').value.trim();
+  const bubble=document.getElementById('ci-bubble').value;
+  const smell=document.getElementById('ci-smell').value;
+  const stage=document.getElementById('ci-stage').value;
+  const note=document.getElementById('ci-note').value.trim();
+  if(temp)b.temp=temp;if(bubble)b.bubble=bubble;if(smell)b.smell=smell;if(stage)b.stage=stage;
+  b.log.push({id:uid(),when:new Date().toISOString().slice(0,16),stage:stage||b.stage,temp,bubble,smell,note:note||'Voice check-in',photos:[]});
+  save();
+  document.getElementById('cmdResult').innerHTML='';document.getElementById('cmdInput').value='';
+  renderAll();toast('✓ Logged to '+b.code);
+}
+
+function toast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.className='toast';document.body.appendChild(t);}t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),2600);}
+
+load();renderAll();initVoice();
+</script>
+</body>
+</html>
